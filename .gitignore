@@ -1,0 +1,8 @@
+build/*
+res/*
+!res/shaders/*
+
+lib/glad/*
+!lib/glad/include/*
+!lib/glad/src/*
+!lib/glad/CMakeLists.txt

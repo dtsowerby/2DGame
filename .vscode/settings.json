@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "glad.h": "c",
+        "files.h": "c",
+        "algorithm": "cpp",
+        "xutility": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp",
+        "shader.h": "c",
+        "window.h": "c",
+        "sprite_renderer.h": "c",
+        "state.h": "c",
+        "texture.h": "c"
+    }
+}
