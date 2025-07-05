@@ -1,5 +1,5 @@
 # how do I separate???
-BIN=build
+BIN=bin
 BUILD=build
 
 .PHONY: all rebuild BUILD
@@ -10,7 +10,7 @@ rebuild: dirs
 	cmake -S . -B $(BUILD)
 
 build: dirs
-	cmake --build $(BIN) --config Release
+	cmake --build $(BUILD) --config Release
 
 dirs:
 	if not exist $(BIN) mkdir $(BIN)

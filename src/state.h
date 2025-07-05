@@ -2,7 +2,7 @@
 
 #include <glfw3.h>
 
-struct State
+typedef struct State
 {
     GLFWwindow* window;
     int windowWidth;
@@ -17,6 +17,6 @@ struct State
     float time;
     unsigned int spriteVAO;
     unsigned int spriteVBO;
-};
+} State;
 
-struct State state;
+extern struct State state;

@@ -10,6 +10,15 @@
         "window.h": "c",
         "sprite_renderer.h": "c",
         "state.h": "c",
-        "texture.h": "c"
+        "texture.h": "c",
+        "inttypes.h": "c",
+        "alhelpers.h": "c",
+        "steam_api_flat.h": "c",
+        "stdbool.h": "c",
+        "isteamgameserverstats.h": "c"
+    },
+
+    "files.exclude": {
+     "**/.git": false
     }
 }

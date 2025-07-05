@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <glad.h>
 #include "state.h"
+#include "utils/sound.h"
+#include "networking/steam_helpers.h"
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
@@ -39,6 +41,14 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (
         return;
     }
 
+    if(InitAL() != 0)
+    {
+        fprintf(stderr, "Failed to initialize OpenAL\n");
+        return;
+    }
+
+    initSteamAPI();
+
     glViewport(0, 0, 1024, 768);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -70,4 +80,11 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (
         glfwSwapBuffers(state.window);
         glfwPollEvents();
     }
+}
+
+// Prolly won't use
+void Cleanup()
+{
+    glfwTerminate();
+    CloseAL();
 }

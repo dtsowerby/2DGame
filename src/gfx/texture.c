@@ -40,8 +40,3 @@ Texture loadTexture(const char* name)
 
     return texture;
 }
-
-Texture loadTileset(const char* name)
-{
-
-}
