@@ -40,3 +40,13 @@ Texture loadTexture(const char* name)
 
     return texture;
 }
+
+Tilemap createTilemap(Texture texture, int tileWidth, int tileHeight, int tileCountX, int tileCountY)
+{
+    Tilemap tilemap;
+    tilemap.texture = texture;
+    tilemap.tileWidth = tileWidth;
+    tilemap.tileCountX = tileCountX;
+
+    return tilemap;
+}

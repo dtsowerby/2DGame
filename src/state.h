@@ -17,6 +17,13 @@ typedef struct State
     float time;
     unsigned int spriteVAO;
     unsigned int spriteVBO;
+    unsigned int tileDim;
+
+    double camX;
+    double camY;
+
+    double mouseX;
+    double mouseY;
 } State;
 
 extern struct State state;

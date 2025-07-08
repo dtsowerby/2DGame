@@ -5,7 +5,7 @@
 struct Entity;
 struct Texture;
 
-void drawSprite(int shaderProgram, Texture texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour);
+void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour);
 void initSpriteRenderer();
-void drawEntity(struct Entity entity);
-void drawTileEntity(struct Entity entity, int tileID);
+void drawEntity(struct Entity* entity);
+void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, int shaderProgram);

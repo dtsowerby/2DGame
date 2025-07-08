@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 #include <glad.h>
-#include "../utils/files.h"
+
+#include "utils/files.h"
 
 unsigned int createVertexShader(const char* file)
 {   

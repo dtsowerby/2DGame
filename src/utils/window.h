@@ -9,6 +9,12 @@
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
+void window_size_callback(GLFWwindow* window, int width, int height) {
+    state.windowWidth = width;
+    state.windowHeight = height;
+    glViewport(0, 0, width, height);
+}
+
 void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (*ui_update)())
 {
     //Init GLFW
@@ -34,6 +40,7 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (
     state.cursorDisabled = 0;
     glfwMakeContextCurrent(state.window);
     glfwSetCursorPosCallback(state.window, mouse_callback);
+    glfwSetWindowSizeCallback(state.window, window_size_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -47,7 +54,7 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (
         return;
     }
 
-    initSteamAPI();
+    //initSteamAPI();
 
     glViewport(0, 0, 1024, 768);
     glEnable(GL_BLEND);
@@ -59,6 +66,9 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(), void (
     state.windowWidth = 1024;
     state.deltaTime = 0.0f;
     state.time = 0;
+    state.tileDim = state.windowWidth / 12;
+    state.camX = 0.0f;
+    state.camY = 0.0f;
 
     start();
 

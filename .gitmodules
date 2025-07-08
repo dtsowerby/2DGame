@@ -7,3 +7,6 @@
 [submodule "lib/libsndfile"]
 	path = lib/libsndfile
 	url = https://github.com/libsndfile/libsndfile
+[submodule "lib/GameNetworkingSockets"]
+	path = lib/GameNetworkingSockets
+	url = https://github.com/ValveSoftware/GameNetworkingSockets

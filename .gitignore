@@ -7,7 +7,3 @@ lib/glad/*
 !lib/glad/include/*
 !lib/glad/src/*
 !lib/glad/CMakeLists.txt
-
-lib/glfw/*
-lib/libsndfile/*
-lib/openal-soft/*

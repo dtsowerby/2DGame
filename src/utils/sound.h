@@ -38,10 +38,11 @@
 #include "AL/al.h"
 #include "AL/alext.h"
 
-#include "utils/alhelpers.h"
+#include "alhelpers.h"
 
 #include "win_main_utf8.h"
 
+typedef ALuint Sound;
 
 enum FormatType {
     Int16,

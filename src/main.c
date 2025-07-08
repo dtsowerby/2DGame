@@ -1,11 +1,14 @@
 #include <stdio.h>
+#include <math.h>
 
 #include <glad.h>
 #include <glfw3.h>
 #include <HandmadeMath.h>
 
+#include "utils/types.h"
 #include "utils/window.h"
 #include "utils/sound.h"
+#include "utils/files.h"
 
 #include "gfx/shader.h"
 #include "gfx/texture.h"
@@ -19,30 +22,17 @@ State state;
 
 Entity player;
 Entity enemy;
-Entity item;
 
-ALuint explode;
-ALuint bugle;
+Sound explode;
+Sound bugle;
 
-// Map dimensions: 12x12
-// Original dimensions: 12x12
+unsigned int tileShaderProgram;
+
+Map map;
+
+// Map dimensions: 8x8
 // Tile dimensions: 16x16
-int map[12][12] = {
-    {78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78},
-    {78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78},
-    {78, 78, 78, 78, 78, 40, 10, 10, 10, 10, 0, 78},
-    {78, 78, 78, 78, 78, 41, 31, 21, 21, 11, 1, 78},
-    {78, 78, 78, 78, 78, 41, 32, 9, 22, 12, 1, 78},
-    {78, 78, 78, 78, 78, 41, 32, 9, 9, 12, 1, 78},
-    {78, 78, 78, 78, 78, 42, 32, 22, 22, 12, 1, 78},
-    {78, 78, 78, 78, 78, 43, 32, 9, 9, 12, 1, 78},
-    {78, 78, 78, 78, 78, 44, 34, 24, 24, 14, 1, 78},
-    {78, 78, 78, 78, 78, 45, 25, 25, 25, 25, 5, 78},
-    {78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78},
-    {78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78}
-};
-
-
+Tilemap tilemap;
 
 void start()
 {   
@@ -55,39 +45,53 @@ void start()
     player.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     player.rotation = 0.0f;
 
-    enemy.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
+    /*enemy.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
     enemy.texture = loadTexture("res/dungeonart/2D Pixel Dungeon Asset Pack/Character_animation/monsters_idle/skeleton1/v1/skeleton_v1_4.png");
     enemy.position = (HMM_Vec2){0.2f, 0.2f};
     enemy.scale = (HMM_Vec2){200.0f, 200.0f};
     enemy.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
-    enemy.rotation = 0.0f;
+    enemy.rotation = 0.0f;*/
 
-    item.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
-    item.texture = loadTexture("res/dungeonart/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png");
-    item.position = (HMM_Vec2){0.8f, 0.2f};
-    item.scale = (HMM_Vec2){state.windowWidth / 12.0f, state.windowWidth / 12.0f};
-    item.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
-    item.rotation = 0.0f;
+    tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
+    tilemap.texture = loadTexture("res/art/Untitled.png");
+    tilemap.tileWidth = 16;
+    tilemap.tileCountX = 8;
 
     explode = loadSound("res/sounds/boom_x.wav");
     bugle = loadSound("res/sounds/call_to_arms.wav");
+
+    map = parseMapFile("res/maps/test.map");
 }
 
+int pt = 0;
 void game_update()
 {   
-    for(int i = 0; i < 12; i++)
+    for(unsigned int i = 0; i < map.height; i++)
     {
-        for(int j = 0; j < 12; j++)
-        {   
-            item.position = (HMM_Vec2){(float)i / 12.0f, 1.0f - (float)j / 12.0f}; // Set position based on tile index
-            drawTileEntity(item, map[i][j]); // Draw the first tile from the tileset
+        for(unsigned int j = 0; j < map.width; j++)
+        {       
+            drawTile(&tilemap, map.data[i][j], (HMM_Vec2){(float)j / 12.0f + 0.5f, (float)i / 9.0f + 0.5f}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, tileShaderProgram); // Draw the first tile from the tileset
         }
     }
 
-    drawEntity(player);
-    player.rotation += 0.01f;
+    //drawEntity(&player);
+    //Crappy Animation
+    pt = (int)round(state.time*5) & 1;
+    if(pt) {
+        drawTile(&tilemap, 5, player.position, player.colour, tileShaderProgram);
+    } else {
+        drawTile(&tilemap, 6, player.position, player.colour, tileShaderProgram);
+    }
+    //player.rotation += 0.01f;
 
-    drawEntity(enemy);
+    //drawEntity(enemy);
+}
+
+void camera_update(double mousePosX, double mousePosY)
+{   
+    HMM_Vec2 playerWorld = (HMM_Vec2){((player.position.X - 0.5f)*state.windowWidth), ((player.position.Y - 0.5f)*state.windowHeight)};
+    state.camX = playerWorld.X + (mousePosX - (state.windowWidth/2.0f))/4.0f;
+    state.camY = playerWorld.Y + (mousePosY - (state.windowHeight/2.0f))/4.0f;
 }
 
 void input()
@@ -99,18 +103,22 @@ void input()
     if (glfwGetKey(state.window, GLFW_KEY_W) == GLFW_PRESS)
     {   
         player.position.Y -= 0.01f;
+        camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_S) == GLFW_PRESS)
     {   
         player.position.Y += 0.01f;
+        camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_A) == GLFW_PRESS)
     {
         player.position.X -= 0.01f;
+        camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_D) == GLFW_PRESS)
     {
         player.position.X += 0.01f;
+        camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_E) == GLFW_PRESS)
     {
@@ -128,8 +136,10 @@ void ui_update()
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{   
-
+{       
+    state.mouseX = xposIn;
+    state.mouseY = yposIn;
+    camera_update(xposIn, yposIn);
 }
 
 int main(void)

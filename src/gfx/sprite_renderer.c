@@ -13,13 +13,17 @@ HMM_Vec2 screenToWorld(HMM_Vec2 position, HMM_Vec2 scale)
     return (HMM_Vec2){(position.X*state.windowWidth) - (0.5f * scale.X), (position.Y*state.windowHeight) - (0.5f * scale.Y)};
 }
 
-void drawSprite(int shaderProgram, Texture texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour)
+void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour)
 {       
     // prepare transformations
     useShader(shaderProgram);
 
     HMM_Mat4 projection = HMM_Orthographic_RH_NO(0.0f, (float)state.windowWidth, (float)state.windowHeight, 0.0f, -1.0f, 1.0f);
     setUniformMat4("projection", projection, shaderProgram);
+
+    HMM_Mat4 view = HMM_Translate((HMM_Vec3){-state.camX, -state.camY, 0.0f});
+
+    setUniformMat4("view", view, shaderProgram);
 
     HMM_Mat4 model = HMM_M4D(1.0f);
 
@@ -38,7 +42,7 @@ void drawSprite(int shaderProgram, Texture texture, HMM_Vec2 position, HMM_Vec2 
     setUniformVec3("spriteColour", colour, shaderProgram);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture.id);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
     setUniformInt1("image", 0, shaderProgram);
 
     glBindVertexArray(state.spriteVAO);
@@ -46,16 +50,18 @@ void drawSprite(int shaderProgram, Texture texture, HMM_Vec2 position, HMM_Vec2 
     glBindVertexArray(0);
 }
 
-void drawEntity(Entity entity)
+void drawEntity(Entity* entity)
 {
-    drawSprite(entity.shaderProgram, entity.texture, entity.position, entity.scale, entity.rotation, entity.colour);
+    drawSprite(entity->shaderProgram, &entity->texture, entity->position, entity->scale, entity->rotation, entity->colour);
 }
 
-void drawTileEntity(Entity entity, int tileID)
+void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, int shaderProgram)
 {   
-    useShader(entity.shaderProgram);
-    setUniformInt1("tileID", tileID, entity.shaderProgram);
-    drawEntity(entity);
+    useShader(shaderProgram);
+    setUniformInt1("tileID", tileID, shaderProgram);
+    setUniformInt1("tilesetSize", tilemap->tileWidth * tilemap->tileCountX, shaderProgram);
+    setUniformInt1("tileDimensions", tilemap->tileWidth, shaderProgram);
+    drawSprite(shaderProgram, &tilemap->texture, position, (HMM_Vec2){(float)state.tileDim, (float)state.tileDim}, 0, colour);
 }
 
 void initSpriteRenderer()

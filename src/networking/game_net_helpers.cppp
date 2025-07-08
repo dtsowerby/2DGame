@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <steam/steamnetworkingsockets.h>
+#include <steam/steamnetworkingtypes.h>
+#include <steam/isteamnetworkingutils.h>
+
+#include "utils/types.h" // Preserved from your original code
+
+extern "C" {
+
+ISteamNetworkingSockets* networking = nullptr;
+HSteamListenSocket listenSocket;
+HSteamNetConnection connection;
+SteamNetworkingIdentity peerIdentity;
+
+int initSteamAPI() {
+    // Initialize GameNetworkingSockets (standalone, no Steam)
+    SteamDatagramErrMsg errMsg;
+    if (!GameNetworkingSockets_Init(nullptr, errMsg)) {
+        fprintf(stderr, "GameNetworkingSockets init failed: %s\n", errMsg);
+        return 0;
+    }
+
+    networking = SteamNetworkingSockets();
+    if (!networking) {
+        fprintf(stderr, "Failed to get GameNetworkingSockets interface\n");
+        return 0;
+    }
+
+    // Create listen socket (port 0 = choose automatically)
+    listenSocket = networking->CreateListenSocketP2P(0, 0, nullptr);
+
+    // Ask for peer identity as custom string (no SteamID!)
+    char partnerID[256];
+    printf("Enter peer identity (any string, or leave empty to wait): ");
+    if (fgets(partnerID, sizeof(partnerID), stdin)) {
+        size_t len = strlen(partnerID);
+        if (len > 0 && partnerID[len - 1] == '\n') {
+            partnerID[len - 1] = '\0';
+        }
+
+        if (strlen(partnerID) > 0) {
+            peerIdentity.Clear();
+            peerIdentity.SetGenericString(partnerID);
+            connection = networking->ConnectP2P(peerIdentity, 0, 0, nullptr);
+        }
+    }
+
+    return 1;
+}
+
+// Connection status callback (still works the same)
+void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t* pInfo) {
+    switch (pInfo->m_info.m_eState) {
+        case k_ESteamNetworkingConnectionState_Connecting:
+            printf("Accepting incoming connection\n");
+            networking->AcceptConnection(pInfo->m_hConn);
+            connection = pInfo->m_hConn;
+            break;
+
+        case k_ESteamNetworkingConnectionState_Connected:
+            printf("Connected to peer!\n");
+            break;
+
+        case k_ESteamNetworkingConnectionState_ClosedByPeer:
+        case k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
+            printf("Connection closed: %s\n", pInfo->m_info.m_szEndDebug);
+            connection = k_HSteamNetConnection_Invalid;
+            break;
+
+        default:
+            break;
+    }
+}
+
+void send_message(const char* msg, u32 length) {
+    if (connection == k_HSteamNetConnection_Invalid) {
+        printf("No active connection to send message\n");
+        return;
+    }
+
+    EResult result = networking->SendMessageToConnection(
+        connection,
+        msg,
+        length,
+        k_nSteamNetworkingSend_Reliable,
+        nullptr
+    );
+
+    if (result != k_EResultOK) {
+        printf("Failed to send message: %d\n", result);
+    }
+}
+
+void receive_messages() {
+    if (connection == k_HSteamNetConnection_Invalid) {
+        return;
+    }
+
+    SteamNetworkingMessage_t* incoming[32];
+    int numMessages = networking->ReceiveMessagesOnConnection(connection, incoming, 32);
+
+    for (int i = 0; i < numMessages; i++) {
+        if (incoming[i] && incoming[i]->m_pData) {
+            printf("Received: %s\n", (const char*)incoming[i]->m_pData);
+            incoming[i]->Release();
+        }
+    }
+}
+
+void check_messages() {
+    if (connection != k_HSteamNetConnection_Invalid) {
+        receive_messages();
+    } else {
+        printf("No active connection.\n");
+    }
+}
+
+} // extern "C"
