@@ -1,0 +1,10 @@
+^D:\REPOS\2DGAME\LIB\GLAD\CMAKEFILES\E507539945C4DA3E0AE1105F1079A1C8\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Repos/2DGame/lib/glad -BD:/Repos/2DGame/lib/glad --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Repos/2DGame/lib/glad/glad.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -61,6 +61,7 @@ void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, 
     setUniformInt1("tileID", tileID, shaderProgram);
     setUniformInt1("tilesetSize", tilemap->tileWidth * tilemap->tileCountX, shaderProgram);
     setUniformInt1("tileDimensions", tilemap->tileWidth, shaderProgram);
+    setUniformVec3("tileColour", colour, shaderProgram);
     drawSprite(shaderProgram, &tilemap->texture, position, (HMM_Vec2){(float)state.tileDim, (float)state.tileDim}, 0, colour);
 }
 

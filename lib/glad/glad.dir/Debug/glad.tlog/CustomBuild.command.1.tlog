@@ -1,0 +1,10 @@
+^D:\REPOS\2DGAME\LIB\GLAD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Repos/2DGame/lib/glad -BD:/Repos/2DGame/lib/glad --check-stamp-file D:/Repos/2DGame/lib/glad/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

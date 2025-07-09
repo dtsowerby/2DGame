@@ -29,6 +29,24 @@ Sound bugle;
 unsigned int tileShaderProgram;
 
 Map map;
+unsigned int mapData[16][15] = {
+    {0,1,2,3,1,2,1,2,1,3,1,3,4},
+    {16,19,11,18,10,11,19,11,18,17,10,17,20},
+    {8,10,11,9,10,11,10,10,17,11,9,10,12},
+    {16,19,11,18,10,11,19,17,18,10,11,17,20},
+    {8,17,17,17,18,17,11,17,11,11,9,11,20},
+    {16,19,11,18,17,11,19,11,18,10,11,17,20},
+    {8,19,11,18,10,17,9,18,10,17,10,11,12},
+    {16,19,11,18,11,17,11,18,10,11,17,10,20},
+    {8,10,11,17,10,17,9,11,17,10,11,9,12},
+    {16,19,11,18,11,17,11,18,10,11,17,10,20},
+    {8,10,11,17,10,17,9,11,17,10,11,9,12},
+    {16,19,11,18,11,11,17,18,10,11,17,10,20},
+    {8,10,11,17,10,9,11,17,10,11,17,9,12},
+    {16,19,11,18,11,11,18,17,10,11,17,10,20},
+    {8,10,11,17,10,17,9,11,17,10,11,9,12},
+    {24,25,27,26,27,25,27,26,27,25,26,27,28}
+};
 
 // Map dimensions: 8x8
 // Tile dimensions: 16x16
@@ -53,14 +71,16 @@ void start()
     enemy.rotation = 0.0f;*/
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
-    tilemap.texture = loadTexture("res/art/Untitled.png");
+    tilemap.texture = loadTexture("res/art/tles1.0.png");
     tilemap.tileWidth = 16;
     tilemap.tileCountX = 8;
 
     explode = loadSound("res/sounds/boom_x.wav");
     bugle = loadSound("res/sounds/call_to_arms.wav");
 
-    map = parseMapFile("res/maps/test.map");
+    //map = parseMapFile("res/maps/test.map");
+    map.height = 16;
+    map.width = 13;
 }
 
 int pt = 0;
@@ -69,9 +89,15 @@ void game_update()
     for(unsigned int i = 0; i < map.height; i++)
     {
         for(unsigned int j = 0; j < map.width; j++)
-        {       
-            drawTile(&tilemap, map.data[i][j], (HMM_Vec2){(float)j / 12.0f + 0.5f, (float)i / 9.0f + 0.5f}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, tileShaderProgram); // Draw the first tile from the tileset
+        {           
+            //printf("%u ", mapData[j][i]);
+            drawTile(&tilemap, mapData[i][j], 
+                (HMM_Vec2){((float)j/state.windowWidth)*state.tileDim, 
+                ((float)i/state.windowHeight)*state.tileDim - 0.6f}, 
+                (HMM_Vec3){1.0f, 1.0f, 1.0f}, tileShaderProgram
+            ); // Draw the first tile from the tilesetddddddddd
         }
+        //printf("\n");
     }
 
     //drawEntity(&player);
