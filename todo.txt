@@ -1,0 +1,6 @@
+Add animation system
+add shadows to sprites
+Add directional animation
+add shadows to bottom walls
+
+particle system?

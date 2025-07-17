@@ -21,7 +21,7 @@ void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2
     HMM_Mat4 projection = HMM_Orthographic_RH_NO(0.0f, (float)state.windowWidth, (float)state.windowHeight, 0.0f, -1.0f, 1.0f);
     setUniformMat4("projection", projection, shaderProgram);
 
-    HMM_Mat4 view = HMM_Translate((HMM_Vec3){-state.camX, -state.camY, 0.0f});
+    HMM_Mat4 view = HMM_Translate((HMM_Vec3){(float)-state.camX, (float)-state.camY, 0.0f});
 
     setUniformMat4("view", view, shaderProgram);
 
@@ -52,14 +52,17 @@ void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2
 
 void drawEntity(Entity* entity)
 {
-    drawSprite(entity->shaderProgram, &entity->texture, entity->position, entity->scale, entity->rotation, entity->colour);
+    //drawSprite(entity->shaderProgram, &entity->texture, entity->position, entity->scale, entity->rotation, entity->colour);
+    unsigned int currentTileID = getEntityCurrentTileID(entity);
+    drawTile(entity->tilemap, currentTileID, entity->position, entity->colour, entity->isFlipped, entity->shaderProgram);
 }
 
-void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, int shaderProgram)
+void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, int isFlipped, int shaderProgram)
 {   
     useShader(shaderProgram);
     setUniformInt1("tileID", tileID, shaderProgram);
     setUniformInt1("tilesetSize", tilemap->tileWidth * tilemap->tileCountX, shaderProgram);
+    setUniformInt1("isFlipped", isFlipped, shaderProgram);
     setUniformInt1("tileDimensions", tilemap->tileWidth, shaderProgram);
     setUniformVec3("tileColour", colour, shaderProgram);
     drawSprite(shaderProgram, &tilemap->texture, position, (HMM_Vec2){(float)state.tileDim, (float)state.tileDim}, 0, colour);

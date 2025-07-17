@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 # Define compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c11 /O2 /Zi /W4")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c17 /O2 /Zi /W4")
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4100 /wd4996")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} /std:c17 /O2 /Zi /W4")
@@ -40,7 +40,13 @@ add_subdirectory(lib/libsndfile EXCLUDE_FROM_ALL)
 #add_subdirectory(lib/GameNetworkingSockets EXCLUDE_FROM_ALL)
 
 # Find all source files
-file(GLOB_RECURSE SRC_FILES src/*.c src/networking/*.cpp, lib/ALHelpers/*.c)
+file(GLOB_RECURSE SRC_FILES 
+    src/*.c 
+    src/networking/*.cpp 
+    lib/ALHelpers/*.c
+)
+
+#set(CMAKE_EXE_LINKER_FLAGS "/ENTRY:wmainCRTStartup")
 
 # Add executable
 add_executable(${PROJECT_NAME} ${SRC_FILES})

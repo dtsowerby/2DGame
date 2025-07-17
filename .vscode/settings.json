@@ -109,7 +109,8 @@
         "regex": "c",
         "win_main_utf8.h": "c",
         "stdio.h": "c",
-        "random": "c"
+        "random": "c",
+        "steam_helpers.h": "c"
     },
 
     "files.exclude": {

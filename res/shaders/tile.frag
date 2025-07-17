@@ -8,6 +8,7 @@ out vec4 fragColour;
 
 uniform sampler2D image;
 uniform vec3 tileColour;
+uniform int isFlipped; // 0 for normal, 1 for flipped horizontally
 uniform int tileDimensions; // Dimensions of a single tile in the tileset
 uniform int tilesetSize;    // Dimensions of the entire tileset texture
 
@@ -29,7 +30,8 @@ void main() {
     vec2 tileScale = vec2(float(tileDimensions) / float(tilesetSize));
     
     // Calculate final UV coordinates
-    vec2 finalUV = tileOffset + TexCoords * tileScale;
+    vec2 flippedTexCoord = vec2(abs(isFlipped - TexCoords.x), TexCoords.y);
+    vec2 finalUV = tileOffset + flippedTexCoord * tileScale;
     
     // Sample color from the tileset texture
     fragColour = texture(image, finalUV) * vec4(tileColour, 1.0);

@@ -9,6 +9,7 @@
 #include "utils/window.h"
 #include "utils/sound.h"
 #include "utils/files.h"
+#include "utils/animation.h"
 
 #include "gfx/shader.h"
 #include "gfx/texture.h"
@@ -18,10 +19,19 @@
 
 #include "state.h"
 
+void move_update();
+
 State state;
 
 Entity player;
 Entity enemy;
+Entity handBomb;
+
+Entity bombShadow;
+HMM_Vec2 normDir;
+HMM_Vec2 normDirHandBomb;
+float initialTime;
+float timeAfterBomb = 0;
 
 Sound explode;
 Sound bugle;
@@ -52,16 +62,59 @@ unsigned int mapData[16][15] = {
 // Tile dimensions: 16x16
 Tilemap tilemap;
 
+// Player animations
+Animation playerIdleDown;
+Animation playerIdleUp;
+
+/*
+ * Animation System Usage Example:
+ * 
+ * 1. Create animations with frame arrays:
+ *    unsigned int walkFrames[] = {1, 2, 3, 4};
+ *    Animation walkAnim = createAnimation(walkFrames, 4, 8.0f, ANIMATION_LOOP);
+ * 
+ * 2. For simple 2-frame toggle animations (like the old pt system):
+ *    Animation toggleAnim = createToggleAnimation(frame1, frame2, 5.0f);
+ * 
+ * 3. Set animation on entity:
+ *    setEntityAnimation(&player, walkAnim);
+ * 
+ * 4. Update animations each frame:
+ *    updateEntityAnimation(&player, state.deltaTime);
+ * 
+ * 5. The entity will automatically use the current animation frame when drawn
+ * 
+ * Animation Types:
+ * - ANIMATION_LOOP: Repeats forever (good for idle, walk cycles)
+ * - ANIMATION_ONCE: Plays once then stops (good for attacks, jumps)
+ * - ANIMATION_PINGPONG: Plays forward then backward (good for breathing effects)
+ */
+
 void start()
 {   
     initSpriteRenderer();
 
-    player.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
-    player.texture = loadTexture("res/awesomeface.png");
+    tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
+    tilemap.texture = loadTexture("res/art/tiles1.0.png");
+    tilemap.tileWidth = 16;
+    tilemap.tileCountX = 8;
+
+    // Create player animations
+    unsigned int idleDownFrames[] = {13, 14};
+    unsigned int idleUpFrames[] = {15, 21};
+    
+    playerIdleDown = createAnimation(idleDownFrames, 2, 5.0f, ANIMATION_LOOP);
+    playerIdleUp = createAnimation(idleUpFrames, 2, 5.0f, ANIMATION_LOOP);
+
+    player.tileID = 14;
+    player.shaderProgram = tileShaderProgram;
+    player.tilemap = &tilemap;
     player.position = (HMM_Vec2){0.5f, 0.5f};
     player.scale = (HMM_Vec2){200.0f, 200.0f};
     player.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     player.rotation = 0.0f;
+    player.isFlipped = 0;
+    player.hasAnimation = 0; // Start without animation, will be set based on state
 
     /*enemy.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
     enemy.texture = loadTexture("res/dungeonart/2D Pixel Dungeon Asset Pack/Character_animation/monsters_idle/skeleton1/v1/skeleton_v1_4.png");
@@ -70,10 +123,25 @@ void start()
     enemy.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     enemy.rotation = 0.0f;*/
 
-    tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
-    tilemap.texture = loadTexture("res/art/tles1.0.png");
-    tilemap.tileWidth = 16;
-    tilemap.tileCountX = 8;
+    handBomb.tileID = 32;
+    handBomb.shaderProgram = tileShaderProgram;
+    handBomb.tilemap = &tilemap;
+    handBomb.scale = (HMM_Vec2){200.0f, 200.0f};
+    handBomb.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
+    handBomb.rotation = 0.0f;
+    handBomb.isFlipped = 0;
+    handBomb.isVisible = 0;
+    handBomb.hasAnimation = 0;
+
+    bombShadow.tileID = 40;
+    bombShadow.shaderProgram = tileShaderProgram;
+    bombShadow.tilemap = &tilemap;
+    bombShadow.scale = (HMM_Vec2){200.0f, 200.0f};
+    bombShadow.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
+    bombShadow.rotation = 0.0f;
+    bombShadow.isFlipped = 0;
+    bombShadow.isVisible = 0;
+    bombShadow.hasAnimation = 0;
 
     explode = loadSound("res/sounds/boom_x.wav");
     bugle = loadSound("res/sounds/call_to_arms.wav");
@@ -86,31 +154,64 @@ void start()
 int pt = 0;
 void game_update()
 {   
+    move_update();
+
+    //Generate map
     for(unsigned int i = 0; i < map.height; i++)
     {
         for(unsigned int j = 0; j < map.width; j++)
         {           
-            //printf("%u ", mapData[j][i]);
             drawTile(&tilemap, mapData[i][j], 
                 (HMM_Vec2){((float)j/state.windowWidth)*state.tileDim, 
                 ((float)i/state.windowHeight)*state.tileDim - 0.6f}, 
-                (HMM_Vec3){1.0f, 1.0f, 1.0f}, tileShaderProgram
-            ); // Draw the first tile from the tilesetddddddddd
+                (HMM_Vec3){1.0f, 1.0f, 1.0f}, 0, tileShaderProgram
+            );
         }
-        //printf("\n");
     }
 
-    //drawEntity(&player);
-    //Crappy Animation
-    pt = (int)round(state.time*5) & 1;
-    if(pt) {
-        drawTile(&tilemap, 5, player.position, player.colour, tileShaderProgram);
+    // Handle player flipping based on mouse position
+    if(state.mouseX < state.windowWidth/2) {
+        player.isFlipped = 1;
     } else {
-        drawTile(&tilemap, 6, player.position, player.colour, tileShaderProgram);
+        player.isFlipped = 0;
     }
-    //player.rotation += 0.01f;
+    
+    // Handle player animation based on mouse Y position
+    if(state.windowHeight/2.0f - state.windowHeight/10.0f < state.mouseY) {
+        // Mouse is in lower area - use idle down animation
+        if (!player.hasAnimation || player.animation.frames != playerIdleDown.frames) {
+            setEntityAnimation(&player, playerIdleDown);
+        }
+    } else {
+        // Mouse is in upper area - use idle up animation  
+        if (!player.hasAnimation || player.animation.frames != playerIdleUp.frames) {
+            setEntityAnimation(&player, playerIdleUp);
+        }
+    }
+    
+    // Update all entity animations
+    updateEntityAnimation(&player, state.deltaTime);
+    updateEntityAnimation(&handBomb, state.deltaTime);
+    updateEntityAnimation(&bombShadow, state.deltaTime);
 
-    //drawEntity(enemy);
+    if(bombShadow.isVisible) {
+        bombShadow.position.X -= normDir.X * state.deltaTime;
+        bombShadow.position.Y -= normDir.Y * state.deltaTime;
+        drawEntity(&bombShadow);
+    }
+    drawEntity(&player);
+    
+    timeAfterBomb = (float)(state.time - initialTime);
+    if(!bombShadow.isVisible) {
+        handBomb.position.X = player.position.X - normDirHandBomb.X * 0.03f;
+        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f - abs(sin(timeAfterBomb*3.0f)) * 0.1f;
+        drawEntity(&bombShadow);
+    } else {
+        handBomb.position.X -= normDir.X * state.deltaTime;
+        handBomb.position.Y -= normDir.Y * state.deltaTime;
+        drawEntity(&bombShadow);
+    }
+    drawEntity(&handBomb);
 }
 
 void camera_update(double mousePosX, double mousePosY)
@@ -120,12 +221,8 @@ void camera_update(double mousePosX, double mousePosY)
     state.camY = playerWorld.Y + (mousePosY - (state.windowHeight/2.0f))/4.0f;
 }
 
-void input()
-{   
-    if (glfwGetKey(state.window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-        glfwTerminate();
-        exit(0);
-    }
+void move_update()
+{
     if (glfwGetKey(state.window, GLFW_KEY_W) == GLFW_PRESS)
     {   
         player.position.Y -= 0.01f;
@@ -146,13 +243,47 @@ void input()
         player.position.X += 0.01f;
         camera_update(state.mouseX, state.mouseY);
     }
-    if (glfwGetKey(state.window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        playSound(bugle);
-    }
-    if (glfwGetKey(state.window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        playSound(explode);
+}
+
+void input(GLFWwindow* window, int key, int scancode, int action, int mods)
+{   
+    //playSound(bugle);
+    //playSound(explode);
+    if(action == GLFW_PRESS){
+        switch(key)
+        {
+            case GLFW_KEY_ESCAPE:
+                glfwTerminate();
+                exit(0);
+                break;
+            case GLFW_KEY_W:
+                player.position.Y -= 0.01f;
+                camera_update(state.mouseX, state.mouseY);
+                break;
+            case GLFW_KEY_S:
+                player.position.Y += 0.01f;
+                camera_update(state.mouseX, state.mouseY);
+                break;
+            case GLFW_KEY_A:
+                player.position.X -= 0.01f;
+                camera_update(state.mouseX, state.mouseY);
+                break;
+            case GLFW_KEY_D:
+                player.position.X += 0.01f;
+                camera_update(state.mouseX, state.mouseY);
+                break;
+            case GLFW_KEY_SPACE:
+                if(bombShadow.isVisible == 0) {
+                    bombShadow.position = (HMM_Vec2){player.position.X, player.position.Y};
+                    bombShadow.isVisible = 1;
+                    normDir = HMM_NormV2((HMM_Vec2){state.windowWidth/2 - state.mouseX, state.windowHeight/2 - state.mouseY});
+                    initialTime = state.time;
+                } else {   
+                    normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - state.mouseX, (float)state.windowHeight/2.0f - state.mouseY});
+                    bombShadow.isVisible = 0;
+                }
+                break;
+        }
     }
 }
 
@@ -168,7 +299,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     camera_update(xposIn, yposIn);
 }
 
-int main(void)
+int main(int argc, char** argv)
 {   
     InitializeWindow(start, game_update, input, ui_update);
     return 0;
