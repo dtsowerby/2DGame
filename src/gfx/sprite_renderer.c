@@ -41,9 +41,16 @@ void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2
     // render textured quad
     setUniformVec3("spriteColour", colour, shaderProgram);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->id);
-    setUniformInt1("image", 0, shaderProgram);
+    if (texture != NULL) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->id);
+        setUniformInt1("image", 0, shaderProgram);
+    } else {
+        // For particles without texture, bind a white texture or disable texturing
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture
+        setUniformInt1("image", 0, shaderProgram);
+    }
 
     glBindVertexArray(state.spriteVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

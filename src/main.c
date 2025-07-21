@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -9,11 +10,12 @@
 #include "utils/window.h"
 #include "utils/sound.h"
 #include "utils/files.h"
-#include "utils/animation.h"
 
+#include "gfx/animation.h"
 #include "gfx/shader.h"
 #include "gfx/texture.h"
 #include "gfx/sprite_renderer.h"
+#include "gfx/particle.h"
 
 #include "entity.h"
 
@@ -37,6 +39,11 @@ Sound explode;
 Sound bugle;
 
 unsigned int tileShaderProgram;
+unsigned int particleShaderProgram;
+
+// Particle system
+ParticleEmitter explosionEmitter;
+ParticleEmitter smokeEmitter;
 
 Map map;
 unsigned int mapData[16][15] = {
@@ -66,38 +73,21 @@ Tilemap tilemap;
 Animation playerIdleDown;
 Animation playerIdleUp;
 
-/*
- * Animation System Usage Example:
- * 
- * 1. Create animations with frame arrays:
- *    unsigned int walkFrames[] = {1, 2, 3, 4};
- *    Animation walkAnim = createAnimation(walkFrames, 4, 8.0f, ANIMATION_LOOP);
- * 
- * 2. For simple 2-frame toggle animations (like the old pt system):
- *    Animation toggleAnim = createToggleAnimation(frame1, frame2, 5.0f);
- * 
- * 3. Set animation on entity:
- *    setEntityAnimation(&player, walkAnim);
- * 
- * 4. Update animations each frame:
- *    updateEntityAnimation(&player, state.deltaTime);
- * 
- * 5. The entity will automatically use the current animation frame when drawn
- * 
- * Animation Types:
- * - ANIMATION_LOOP: Repeats forever (good for idle, walk cycles)
- * - ANIMATION_ONCE: Plays once then stops (good for attacks, jumps)
- * - ANIMATION_PINGPONG: Plays forward then backward (good for breathing effects)
- */
-
 void start()
 {   
     initSpriteRenderer();
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
+    particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
+    
     tilemap.texture = loadTexture("res/art/tiles1.0.png");
     tilemap.tileWidth = 16;
     tilemap.tileCountX = 8;
+
+    // Initialize particle system
+    explosionEmitter = createExplosionEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
+    smokeEmitter = createSmokeEmitter((HMM_Vec2){0.3f, 0.3f});
+    startEmitter(&smokeEmitter); // Start smoke emitter automatically
 
     // Create player animations
     unsigned int idleDownFrames[] = {13, 14};
@@ -203,15 +193,35 @@ void game_update()
     
     timeAfterBomb = (float)(state.time - initialTime);
     if(!bombShadow.isVisible) {
+        normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
         handBomb.position.X = player.position.X - normDirHandBomb.X * 0.03f;
-        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f - abs(sin(timeAfterBomb*3.0f)) * 0.1f;
-        drawEntity(&bombShadow);
+        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f;
     } else {
         handBomb.position.X -= normDir.X * state.deltaTime;
         handBomb.position.Y -= normDir.Y * state.deltaTime;
+        handBomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 0.01f;
         drawEntity(&bombShadow);
     }
+    if(bombShadow.isVisible && sin(timeAfterBomb*7.2f) < 0.0f)
+    {
+        // Trigger explosion effect at bomb position
+        explosionEmitter.position = bombShadow.position;
+        emitBurst(&explosionEmitter, 30); // Emit 30 particles for explosion
+        
+        bombShadow.isVisible = 0;
+        normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
+        handBomb.position.X = player.position.X - normDirHandBomb.X * 0.03f;
+        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f;
+    }
     drawEntity(&handBomb);
+    
+    // Update particle systems
+    updateParticleEmitter(&explosionEmitter, state.deltaTime);
+    updateParticleEmitter(&smokeEmitter, state.deltaTime);
+    
+    // Render particle systems
+    renderParticleEmitter(&explosionEmitter, particleShaderProgram);
+    renderParticleEmitter(&smokeEmitter, particleShaderProgram);
 }
 
 void camera_update(double mousePosX, double mousePosY)
@@ -247,6 +257,10 @@ void move_update()
 
 void input(GLFWwindow* window, int key, int scancode, int action, int mods)
 {   
+    (void)scancode; // Unused parameter
+    (void)mods; // Unused parameter
+    (void)window; // Unused parameter
+
     //playSound(bugle);
     //playSound(explode);
     if(action == GLFW_PRESS){
@@ -276,11 +290,25 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                 if(bombShadow.isVisible == 0) {
                     bombShadow.position = (HMM_Vec2){player.position.X, player.position.Y};
                     bombShadow.isVisible = 1;
-                    normDir = HMM_NormV2((HMM_Vec2){state.windowWidth/2 - state.mouseX, state.windowHeight/2 - state.mouseY});
+                    normDir = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
                     initialTime = state.time;
                 } else {   
-                    normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - state.mouseX, (float)state.windowHeight/2.0f - state.mouseY});
+                    normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
                     bombShadow.isVisible = 0;
+                }
+                break;
+            case GLFW_KEY_E:
+                // Trigger explosion at player position
+                explosionEmitter.position = player.position;
+                emitBurst(&explosionEmitter, 40);
+                break;
+            case GLFW_KEY_R:
+                // Toggle smoke emitter on/off
+                if (smokeEmitter.isActive) {
+                    stopEmitter(&smokeEmitter);
+                } else {
+                    smokeEmitter.position = player.position;
+                    startEmitter(&smokeEmitter);
                 }
                 break;
         }
@@ -294,6 +322,8 @@ void ui_update()
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {       
+    (void)window; // Unused parameter
+    
     state.mouseX = xposIn;
     state.mouseY = yposIn;
     camera_update(xposIn, yposIn);
@@ -301,6 +331,9 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 int main(int argc, char** argv)
 {   
+    (void)argc; // Unused parameter
+    (void)argv; // Unused parameter
+
     InitializeWindow(start, game_update, input, ui_update);
     return 0;
 }

@@ -110,7 +110,9 @@
         "win_main_utf8.h": "c",
         "stdio.h": "c",
         "random": "c",
-        "steam_helpers.h": "c"
+        "steam_helpers.h": "c",
+        "particle.h": "c",
+        "animation.h": "c"
     },
 
     "files.exclude": {

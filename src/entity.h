@@ -2,7 +2,7 @@
 
 #include <HandmadeMath.h>
 #include "gfx/texture.h"
-#include "utils/animation.h"
+#include "gfx/animation.h"
 
 typedef struct Entity
 {
