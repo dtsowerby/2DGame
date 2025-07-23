@@ -17,6 +17,8 @@
 #include "gfx/sprite_renderer.h"
 #include "gfx/particle.h"
 
+#include "game/collision.h"
+
 #include "entity.h"
 
 #include "state.h"
@@ -40,10 +42,13 @@ Sound bugle;
 
 unsigned int tileShaderProgram;
 unsigned int particleShaderProgram;
+unsigned int newTileShaderProgram;
 
 // Particle system
 ParticleEmitter explosionEmitter;
 ParticleEmitter smokeEmitter;
+ParticleEmitter characterEmitter;
+ParticleEmitter bombEmitter;
 
 Map map;
 unsigned int mapData[16][15] = {
@@ -78,6 +83,7 @@ void start()
     initSpriteRenderer();
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
+    newTileShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
     particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
     
     tilemap.texture = loadTexture("res/art/tiles1.0.png");
@@ -87,7 +93,12 @@ void start()
     // Initialize particle system
     explosionEmitter = createExplosionEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
     smokeEmitter = createSmokeEmitter((HMM_Vec2){0.3f, 0.3f});
+    bombEmitter = createBombEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
+
+    characterEmitter = createCharacterEmitter(player.position, 50);
+
     startEmitter(&smokeEmitter); // Start smoke emitter automatically
+    startEmitter(&characterEmitter);
 
     // Create player animations
     unsigned int idleDownFrames[] = {13, 14};
@@ -99,7 +110,7 @@ void start()
     player.tileID = 14;
     player.shaderProgram = tileShaderProgram;
     player.tilemap = &tilemap;
-    player.position = (HMM_Vec2){0.5f, 0.5f};
+    player.position = (HMM_Vec2){500.0f, 500.0f};
     player.scale = (HMM_Vec2){200.0f, 200.0f};
     player.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     player.rotation = 0.0f;
@@ -152,9 +163,9 @@ void game_update()
         for(unsigned int j = 0; j < map.width; j++)
         {           
             drawTile(&tilemap, mapData[i][j], 
-                (HMM_Vec2){((float)j/state.windowWidth)*state.tileDim, 
-                ((float)i/state.windowHeight)*state.tileDim - 0.6f}, 
-                (HMM_Vec3){1.0f, 1.0f, 1.0f}, 0, tileShaderProgram
+                (HMM_Vec2){((float)j)*state.tileDim + sin(state.time * i) * 4.0f, 
+                ((float)i)*state.tileDim - 0.6f + cos(state.time * j) * 4.0f}, 
+                (HMM_Vec3){fabs((i+j)%2 - 0.4f), fabs((i+j)%2 - 0.4f), fabs((i+j)%2 - 0.6f)}, 0, newTileShaderProgram
             );
         }
     }
@@ -183,23 +194,19 @@ void game_update()
     updateEntityAnimation(&player, state.deltaTime);
     updateEntityAnimation(&handBomb, state.deltaTime);
     updateEntityAnimation(&bombShadow, state.deltaTime);
-
-    if(bombShadow.isVisible) {
-        bombShadow.position.X -= normDir.X * state.deltaTime;
-        bombShadow.position.Y -= normDir.Y * state.deltaTime;
-        drawEntity(&bombShadow);
-    }
-    drawEntity(&player);
     
     timeAfterBomb = (float)(state.time - initialTime);
     if(!bombShadow.isVisible) {
         normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
-        handBomb.position.X = player.position.X - normDirHandBomb.X * 0.03f;
-        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f;
+        handBomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
+        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
     } else {
-        handBomb.position.X -= normDir.X * state.deltaTime;
-        handBomb.position.Y -= normDir.Y * state.deltaTime;
-        handBomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 0.01f;
+        handBomb.position.X -= normDir.X * state.deltaTime * 400.0f;
+        handBomb.position.Y -= normDir.Y * state.deltaTime * 400.0f;
+        bombShadow.position.X -= normDir.X * state.deltaTime * 400.0f;
+        bombShadow.position.Y -= normDir.Y * state.deltaTime * 400.0f;
+
+        handBomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 15.0f;
         drawEntity(&bombShadow);
     }
     if(bombShadow.isVisible && sin(timeAfterBomb*7.2f) < 0.0f)
@@ -210,47 +217,70 @@ void game_update()
         
         bombShadow.isVisible = 0;
         normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
-        handBomb.position.X = player.position.X - normDirHandBomb.X * 0.03f;
-        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 0.03f;
+        handBomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
+        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
     }
-    drawEntity(&handBomb);
+    //drawEntity(&handBomb);
+
+    characterEmitter.position = player.position;
+    bombEmitter.position = handBomb.position;
     
     // Update particle systems
     updateParticleEmitter(&explosionEmitter, state.deltaTime);
     updateParticleEmitter(&smokeEmitter, state.deltaTime);
+    updateParticleEmitter(&characterEmitter, state.deltaTime);
+    updateParticleEmitter(&bombEmitter, state.deltaTime);
     
     // Render particle systems
     renderParticleEmitter(&explosionEmitter, particleShaderProgram);
     renderParticleEmitter(&smokeEmitter, particleShaderProgram);
+    renderParticleEmitter(&characterEmitter, particleShaderProgram);
+    renderParticleEmitter(&bombEmitter, particleShaderProgram);
+
+    printf("FPS: %f\n", 1000.0f/state.deltaTime);
 }
 
 void camera_update(double mousePosX, double mousePosY)
 {   
-    HMM_Vec2 playerWorld = (HMM_Vec2){((player.position.X - 0.5f)*state.windowWidth), ((player.position.Y - 0.5f)*state.windowHeight)};
-    state.camX = playerWorld.X + (mousePosX - (state.windowWidth/2.0f))/4.0f;
-    state.camY = playerWorld.Y + (mousePosY - (state.windowHeight/2.0f))/4.0f;
+    HMM_Vec2 playerWorld = (HMM_Vec2){(player.position.X - 0.5f*state.windowWidth), (player.position.Y - 0.5f*state.windowHeight)};
+    //HMM_Vec2 playerWorld = screenToWorld(player.position, player.scale);
+    state.camX = playerWorld.X + (mousePosX - (state.windowWidth/2.0f))/8.0f;
+    state.camY = playerWorld.Y + (mousePosY - (state.windowHeight/2.0f))/8.0f;
 }
 
 void move_update()
-{
+{   
+    float speed = 10.0f;
     if (glfwGetKey(state.window, GLFW_KEY_W) == GLFW_PRESS)
     {   
-        player.position.Y -= 0.01f;
+        player.position.Y -= speed;
+        if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
+            player.position.Y += speed;; // Prevent moving through walls
+        }
         camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_S) == GLFW_PRESS)
     {   
-        player.position.Y += 0.01f;
+        player.position.Y += speed;
+        if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
+            player.position.Y -= speed;; // Prevent moving through walls
+        }
         camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        player.position.X -= 0.01f;
+        player.position.X -= speed;
+        if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
+            player.position.X += speed;; // Prevent moving through walls
+        }
         camera_update(state.mouseX, state.mouseY);
     }
     if (glfwGetKey(state.window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        player.position.X += 0.01f;
+        player.position.X += speed;
+        if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
+            player.position.X -= speed;; // Prevent moving through walls
+        }
         camera_update(state.mouseX, state.mouseY);
     }
 }
@@ -292,9 +322,11 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                     bombShadow.isVisible = 1;
                     normDir = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
                     initialTime = state.time;
+                    startEmitter(&bombEmitter);
                 } else {   
                     normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
                     bombShadow.isVisible = 0;
+                    stopEmitter(&bombEmitter);
                 }
                 break;
             case GLFW_KEY_E:

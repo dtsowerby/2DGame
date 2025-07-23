@@ -9,8 +9,10 @@
 #include "sprite_renderer.h"
 
 HMM_Vec2 screenToWorld(HMM_Vec2 position, HMM_Vec2 scale)
-{
-    return (HMM_Vec2){(position.X*state.windowWidth) - (0.5f * scale.X), (position.Y*state.windowHeight) - (0.5f * scale.Y)};
+{   
+    // Scale in pixels??
+    // function used to actually do something
+    return (HMM_Vec2){(position.X) - (0.5f * scale.X), (position.Y) - (0.5f * scale.Y)};
 }
 
 void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour)
@@ -72,7 +74,7 @@ void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, 
     setUniformInt1("isFlipped", isFlipped, shaderProgram);
     setUniformInt1("tileDimensions", tilemap->tileWidth, shaderProgram);
     setUniformVec3("tileColour", colour, shaderProgram);
-    drawSprite(shaderProgram, &tilemap->texture, position, (HMM_Vec2){(float)state.tileDim, (float)state.tileDim}, 0, colour);
+    drawSprite(shaderProgram, &tilemap->texture, position, (HMM_Vec2){(float)state.tileDim * 1.2f, (float)state.tileDim * 1.2f}, 0, colour);
 }
 
 void initSpriteRenderer()
