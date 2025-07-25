@@ -9,6 +9,8 @@
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
+    (void)window;
+
     state.windowWidth = width;
     state.windowHeight = height;
     glViewport(0, 0, width, height);
@@ -56,19 +58,24 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
 
     //initSteamAPI();
 
-    glViewport(0, 0, 1024, 768);
+    const int initialWindowHeight = 768;
+    const int initialWindowWidth = 1024;
+
+    glViewport(0, 0, initialWindowWidth, initialWindowHeight);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
-    state.windowHeight = 768;
-    state.windowWidth = 1024;
+    state.windowHeight = initialWindowHeight;
+    state.windowWidth = initialWindowWidth;
     state.deltaTime = 0.0f;
     state.time = 0;
     state.tileDim = state.windowWidth / 12;
     state.camX = 0.0f;
     state.camY = 0.0f;
+    state.referenceWidth = initialWindowWidth;
+    state.referenceHeight = initialWindowHeight;
 
     start();
 

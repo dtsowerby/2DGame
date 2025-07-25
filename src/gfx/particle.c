@@ -169,12 +169,12 @@ void emitBurst(ParticleEmitter* emitter, int count) {
     }
 }
 
-void updateParticleEmitter(ParticleEmitter* emitter, float deltaTime) {
+void updateParticleEmitter(ParticleEmitter* emitter) {
     if (!emitter || !emitter->particles) return;
     
     // Emit new particles if active
     if (emitter->isActive && emitter->emissionRate > 0.0f) {
-        emitter->emissionTimer += deltaTime;
+        emitter->emissionTimer += state.deltaTime;
         float emissionInterval = 1.0f / emitter->emissionRate;
         
         while (emitter->emissionTimer >= emissionInterval) {
@@ -191,7 +191,7 @@ void updateParticleEmitter(ParticleEmitter* emitter, float deltaTime) {
         if (!p->isActive) continue;
         
         // Update life
-        p->life -= deltaTime / p->maxLife;
+        p->life -= state.deltaTime / p->maxLife;
         if (p->life <= 0.0f) {
             p->isActive = 0;
             continue;
@@ -200,17 +200,17 @@ void updateParticleEmitter(ParticleEmitter* emitter, float deltaTime) {
         emitter->activeCount++;
         
         // Update physics
-        p->velocity = HMM_AddV2(p->velocity, HMM_MulV2F(p->acceleration, deltaTime));
+        p->velocity = HMM_AddV2(p->velocity, HMM_MulV2F(p->acceleration, state.deltaTime));
         
         // Apply drag
         if (p->drag > 0.0f) {
-            float dragForce = 1.0f - (p->drag * deltaTime);
+            float dragForce = 1.0f - (p->drag * state.deltaTime);
             if (dragForce < 0.0f) dragForce = 0.0f;
             p->velocity = HMM_MulV2F(p->velocity, dragForce);
         }
         
         // Update position
-        p->position = HMM_AddV2(p->position, HMM_MulV2F(p->velocity, deltaTime));
+        p->position = HMM_AddV2(p->position, HMM_MulV2F(p->velocity, state.deltaTime));
         
         // Update visual properties based on life
         float lifeRatio = p->life;
@@ -379,8 +379,9 @@ ParticleEmitter createBombEmitter(HMM_Vec2 position, int particleCount) {
     setEmitterVelocityRange(&emitter, (HMM_Vec2){2.0f, 2.0f}, (HMM_Vec2){50.0f, 50.0f});
     setEmitterColorRange(&emitter, (HMM_Vec3){0.00f, 0.00f, 0.00f}, (HMM_Vec3){0.1f, 0.1f, 0.1f}); // White to black
     setEmitterScaleRange(&emitter, 0.25f, 0.5f);
-    setEmitterLifeRange(&emitter, 0.10f, 0.25f);
+    setEmitterLifeRange(&emitter, 0.05f, 0.10f);
     setEmitterSpread(&emitter, 0.0f, 6.28318f); // Full circle
     setEmitterDragRange(&emitter, 0.5f, 1.0f);
     return emitter;
 }
+

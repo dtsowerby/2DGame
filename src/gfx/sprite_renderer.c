@@ -15,12 +15,49 @@ HMM_Vec2 screenToWorld(HMM_Vec2 position, HMM_Vec2 scale)
     return (HMM_Vec2){(position.X) - (0.5f * scale.X), (position.Y) - (0.5f * scale.Y)};
 }
 
+// Get the current projection dimensions used for rendering
+HMM_Vec2 getProjectionDimensions()
+{
+    float currentAspect = (float)state.windowWidth / (float)state.windowHeight;
+    float referenceAspect = (float)state.referenceWidth / (float)state.referenceHeight;
+
+    float projWidth, projHeight;
+    if (currentAspect > referenceAspect) {
+        // Window is wider than reference - maintain height, expand width
+        projHeight = (float)state.referenceHeight;
+        projWidth = (float)state.referenceHeight * currentAspect;
+    } else {
+        // Window is taller than reference - maintain width, expand height
+        projWidth = (float)state.referenceWidth;
+        projHeight = (float)state.referenceWidth / currentAspect;
+    }
+    
+    return (HMM_Vec2){projWidth, projHeight};
+}
+
+// Convert mouse coordinates to game world coordinates
+HMM_Vec2 mouseToWorld(double mouseX, double mouseY)
+{
+    HMM_Vec2 projDims = getProjectionDimensions();
+    
+    // Convert mouse coordinates from window space to projection space
+    float normalizedX = (float)mouseX / (float)state.windowWidth;
+    float normalizedY = (float)mouseY / (float)state.windowHeight;
+    
+    float worldX = normalizedX * projDims.X;
+    float worldY = normalizedY * projDims.Y;
+    
+    return (HMM_Vec2){worldX, worldY};
+}
+
 void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour)
 {       
     // prepare transformations
     useShader(shaderProgram);
 
-    HMM_Mat4 projection = HMM_Orthographic_RH_NO(0.0f, (float)state.windowWidth, (float)state.windowHeight, 0.0f, -1.0f, 1.0f);
+    // Use a fixed reference resolution to maintain consistent view
+    HMM_Vec2 projDims = getProjectionDimensions();
+    HMM_Mat4 projection = HMM_Orthographic_RH_NO(0.0f, projDims.X, projDims.Y, 0.0f, -1.0f, 1.0f);
     setUniformMat4("projection", projection, shaderProgram);
 
     HMM_Mat4 view = HMM_Translate((HMM_Vec3){(float)-state.camX, (float)-state.camY, 0.0f});
@@ -62,8 +99,10 @@ void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2
 void drawEntity(Entity* entity)
 {
     //drawSprite(entity->shaderProgram, &entity->texture, entity->position, entity->scale, entity->rotation, entity->colour);
-    unsigned int currentTileID = getEntityCurrentTileID(entity);
-    drawTile(entity->tilemap, currentTileID, entity->position, entity->colour, entity->isFlipped, entity->shaderProgram);
+    //unsigned int currentTileID = getEntityCurrentTileID(entity);
+    //drawTile(entity->tilemap, currentTileID, entity->position, entity->colour, entity->isFlipped, entity->shaderProgram);
+    entity->particleEmitter.isActive = entity->isVisible;
+    renderParticleEmitter(&entity->particleEmitter, entity->shaderProgram);
 }
 
 void drawTile(Tilemap* tilemap, int tileID, HMM_Vec2 position, HMM_Vec3 colour, int isFlipped, int shaderProgram)

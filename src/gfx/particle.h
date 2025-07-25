@@ -72,7 +72,7 @@ void resumeEmitter(ParticleEmitter* emitter);
 void resetEmitter(ParticleEmitter* emitter);
 
 // Update and render
-void updateParticleEmitter(ParticleEmitter* emitter, float deltaTime);
+void updateParticleEmitter(ParticleEmitter* emitter);
 void renderParticleEmitter(ParticleEmitter* emitter, unsigned int shaderProgram);
 
 // Configuration helpers

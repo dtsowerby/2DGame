@@ -1,4 +1,5 @@
 #include "../entity.h"
+#include <stdio.h>
 
 Entity duplicate(Entity* entity)
 {
@@ -6,9 +7,20 @@ Entity duplicate(Entity* entity)
     return newEntity;
 }
 
-// Animation Component
+void updateEntity(Entity* entity)
+{
+    if (entity == NULL) return;
 
-void setEntityAnimation(Entity* entity, Animation anim) {
+    // Update particle emitter
+    if (entity->particleEmitter.isActive) {
+        entity->particleEmitter.position = entity->position;
+        updateParticleEmitter(&entity->particleEmitter);
+    }
+}
+
+// Animation Component - Deprecated
+
+/*void setEntityAnimation(Entity* entity, Animation anim) {
     if (entity == NULL) return;
     
     entity->animation = anim;
@@ -37,4 +49,4 @@ void clearEntityAnimation(Entity* entity) {
     
     destroyAnimation(&entity->animation);
     entity->hasAnimation = 0;
-}
+}*/

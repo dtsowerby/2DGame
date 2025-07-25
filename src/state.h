@@ -24,6 +24,9 @@ typedef struct State
 
     double mouseX;
     double mouseY;
+
+    int referenceWidth;
+    int referenceHeight;
 } State;
 
 extern struct State state;

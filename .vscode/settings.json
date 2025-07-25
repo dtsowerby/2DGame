@@ -113,7 +113,8 @@
         "steam_helpers.h": "c",
         "particle.h": "c",
         "animation.h": "c",
-        "util": "c"
+        "util": "c",
+        "debug_shapes.h": "c"
     },
 
     "files.exclude": {

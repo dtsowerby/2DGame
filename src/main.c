@@ -10,12 +10,14 @@
 #include "utils/window.h"
 #include "utils/sound.h"
 #include "utils/files.h"
+#include "utils/debug_shapes.h"
+#include "utils/random.h"
 
-#include "gfx/animation.h"
 #include "gfx/shader.h"
 #include "gfx/texture.h"
 #include "gfx/sprite_renderer.h"
 #include "gfx/particle.h"
+#include "gfx/primitive.h"
 
 #include "game/collision.h"
 
@@ -28,10 +30,9 @@ void move_update();
 State state;
 
 Entity player;
-Entity enemy;
-Entity handBomb;
+Entity bomb;
+HMM_Vec2 bombShadowPosition;
 
-Entity bombShadow;
 HMM_Vec2 normDir;
 HMM_Vec2 normDirHandBomb;
 float initialTime;
@@ -42,13 +43,10 @@ Sound bugle;
 
 unsigned int tileShaderProgram;
 unsigned int particleShaderProgram;
-unsigned int newTileShaderProgram;
 
 // Particle system
 ParticleEmitter explosionEmitter;
 ParticleEmitter smokeEmitter;
-ParticleEmitter characterEmitter;
-ParticleEmitter bombEmitter;
 
 Map map;
 unsigned int mapData[16][15] = {
@@ -70,52 +68,46 @@ unsigned int mapData[16][15] = {
     {24,25,27,26,27,25,27,26,27,25,26,27,28}
 };
 
+Entity entities[100];
+char entityExists[100] = {0};
+
 // Map dimensions: 8x8
 // Tile dimensions: 16x16
 Tilemap tilemap;
 
-// Player animations
-Animation playerIdleDown;
-Animation playerIdleUp;
+float col_one;
+float col_two;
+float col_three;
 
 void start()
 {   
     initSpriteRenderer();
+    initDebugShapes();
+    initPrimitives();
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
-    newTileShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
     particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
     
     tilemap.texture = loadTexture("res/art/tiles1.0.png");
     tilemap.tileWidth = 16;
-    tilemap.tileCountX = 8;
+    tilemap.tileCountX = 15;
 
     // Initialize particle system
     explosionEmitter = createExplosionEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
     smokeEmitter = createSmokeEmitter((HMM_Vec2){0.3f, 0.3f});
-    bombEmitter = createBombEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
-
-    characterEmitter = createCharacterEmitter(player.position, 50);
+    bomb.particleEmitter = createBombEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
 
     startEmitter(&smokeEmitter); // Start smoke emitter automatically
-    startEmitter(&characterEmitter);
 
-    // Create player animations
-    unsigned int idleDownFrames[] = {13, 14};
-    unsigned int idleUpFrames[] = {15, 21};
-    
-    playerIdleDown = createAnimation(idleDownFrames, 2, 5.0f, ANIMATION_LOOP);
-    playerIdleUp = createAnimation(idleUpFrames, 2, 5.0f, ANIMATION_LOOP);
-
-    player.tileID = 14;
-    player.shaderProgram = tileShaderProgram;
-    player.tilemap = &tilemap;
     player.position = (HMM_Vec2){500.0f, 500.0f};
     player.scale = (HMM_Vec2){200.0f, 200.0f};
     player.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     player.rotation = 0.0f;
-    player.isFlipped = 0;
-    player.hasAnimation = 0; // Start without animation, will be set based on state
+    player.isVisible = 1;
+
+    player.shaderProgram = particleShaderProgram;
+    player.particleEmitter = createCharacterEmitter(player.position, 50);
+    startEmitter(&player.particleEmitter);
 
     /*enemy.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
     enemy.texture = loadTexture("res/dungeonart/2D Pixel Dungeon Asset Pack/Character_animation/monsters_idle/skeleton1/v1/skeleton_v1_4.png");
@@ -124,25 +116,11 @@ void start()
     enemy.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     enemy.rotation = 0.0f;*/
 
-    handBomb.tileID = 32;
-    handBomb.shaderProgram = tileShaderProgram;
-    handBomb.tilemap = &tilemap;
-    handBomb.scale = (HMM_Vec2){200.0f, 200.0f};
-    handBomb.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
-    handBomb.rotation = 0.0f;
-    handBomb.isFlipped = 0;
-    handBomb.isVisible = 0;
-    handBomb.hasAnimation = 0;
-
-    bombShadow.tileID = 40;
-    bombShadow.shaderProgram = tileShaderProgram;
-    bombShadow.tilemap = &tilemap;
-    bombShadow.scale = (HMM_Vec2){200.0f, 200.0f};
-    bombShadow.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
-    bombShadow.rotation = 0.0f;
-    bombShadow.isFlipped = 0;
-    bombShadow.isVisible = 0;
-    bombShadow.hasAnimation = 0;
+    bomb.shaderProgram = tileShaderProgram;
+    bomb.scale = (HMM_Vec2){200.0f, 200.0f};
+    bomb.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
+    bomb.rotation = 0.0f;
+    bomb.isVisible = 1;
 
     explode = loadSound("res/sounds/boom_x.wav");
     bugle = loadSound("res/sounds/call_to_arms.wav");
@@ -150,6 +128,12 @@ void start()
     //map = parseMapFile("res/maps/test.map");
     map.height = 16;
     map.width = 13;
+
+    init_random();
+
+    col_one = random_range(0.3f, 0.7f);
+    col_two = random_range(0.3f, 0.7f);
+    col_three = random_range(0.3f, 0.7f);
 }
 
 int pt = 0;
@@ -165,87 +149,75 @@ void game_update()
             drawTile(&tilemap, mapData[i][j], 
                 (HMM_Vec2){((float)j)*state.tileDim + sin(state.time * i) * 4.0f, 
                 ((float)i)*state.tileDim - 0.6f + cos(state.time * j) * 4.0f}, 
-                (HMM_Vec3){fabs((i+j)%2 - 0.4f), fabs((i+j)%2 - 0.4f), fabs((i+j)%2 - 0.6f)}, 0, newTileShaderProgram
+                (HMM_Vec3){fabs((i+j)%2 - col_one),
+                           fabs((i+j)%2 - col_two), 
+                           fabs((i+j)%2 - col_three)}, 0,  particleShaderProgram 
             );
         }
     }
-
-    // Handle player flipping based on mouse position
-    if(state.mouseX < state.windowWidth/2) {
-        player.isFlipped = 1;
-    } else {
-        player.isFlipped = 0;
-    }
-    
-    // Handle player animation based on mouse Y position
-    if(state.windowHeight/2.0f - state.windowHeight/10.0f < state.mouseY) {
-        // Mouse is in lower area - use idle down animation
-        if (!player.hasAnimation || player.animation.frames != playerIdleDown.frames) {
-            setEntityAnimation(&player, playerIdleDown);
-        }
-    } else {
-        // Mouse is in upper area - use idle up animation  
-        if (!player.hasAnimation || player.animation.frames != playerIdleUp.frames) {
-            setEntityAnimation(&player, playerIdleUp);
-        }
-    }
-    
-    // Update all entity animations
-    updateEntityAnimation(&player, state.deltaTime);
-    updateEntityAnimation(&handBomb, state.deltaTime);
-    updateEntityAnimation(&bombShadow, state.deltaTime);
     
     timeAfterBomb = (float)(state.time - initialTime);
-    if(!bombShadow.isVisible) {
-        normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
-        handBomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
-        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
-    } else {
-        handBomb.position.X -= normDir.X * state.deltaTime * 400.0f;
-        handBomb.position.Y -= normDir.Y * state.deltaTime * 400.0f;
-        bombShadow.position.X -= normDir.X * state.deltaTime * 400.0f;
-        bombShadow.position.Y -= normDir.Y * state.deltaTime * 400.0f;
-
-        handBomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 15.0f;
-        drawEntity(&bombShadow);
-    }
-    if(bombShadow.isVisible && sin(timeAfterBomb*7.2f) < 0.0f)
+    if(bomb.isVisible && sin(timeAfterBomb*7.2f) < 0.0f)
     {
-        // Trigger explosion effect at bomb position
-        explosionEmitter.position = bombShadow.position;
-        emitBurst(&explosionEmitter, 30); // Emit 30 particles for explosion
-        
-        bombShadow.isVisible = 0;
-        normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
-        handBomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
-        handBomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
+        explosionEmitter.position = bomb.position;
+        emitBurst(&explosionEmitter, 30);
+        bomb.isVisible = 0;
+        bomb.particleEmitter.isActive = 0;
     }
-    //drawEntity(&handBomb);
+    if(!bomb.isVisible) {
+        HMM_Vec2 projDims = getProjectionDimensions();
+        HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
+        normDirHandBomb = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
+        bomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
+        bomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
+    } else {
+        bomb.position.X -= normDir.X * state.deltaTime * 400.0f;
+        bomb.position.Y -= normDir.Y * state.deltaTime * 400.0f;
+        bombShadowPosition.X -= normDir.X * state.deltaTime * 400.0f;
+        bombShadowPosition.Y -= normDir.Y * state.deltaTime * 400.0f;
 
-    characterEmitter.position = player.position;
-    bombEmitter.position = handBomb.position;
+        bomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 15.0f;
+        drawEntity(&bomb);
+        drawSquare((HMM_Vec2){bombShadowPosition.X, bombShadowPosition.Y}, 20.0f, 45.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
+        drawSquare((HMM_Vec2){bombShadowPosition.X, bombShadowPosition.Y}, 18.0f, 135.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
+    }
     
     // Update particle systems
-    updateParticleEmitter(&explosionEmitter, state.deltaTime);
-    updateParticleEmitter(&smokeEmitter, state.deltaTime);
-    updateParticleEmitter(&characterEmitter, state.deltaTime);
-    updateParticleEmitter(&bombEmitter, state.deltaTime);
-    
-    // Render particle systems
+    updateParticleEmitter(&explosionEmitter);
+    updateParticleEmitter(&smokeEmitter);
+
+    updateEntity(&player);
+    updateEntity(&bomb);
+
+    drawEntity(&player);
+
     renderParticleEmitter(&explosionEmitter, particleShaderProgram);
     renderParticleEmitter(&smokeEmitter, particleShaderProgram);
-    renderParticleEmitter(&characterEmitter, particleShaderProgram);
-    renderParticleEmitter(&bombEmitter, particleShaderProgram);
 
-    printf("FPS: %f\n", 1000.0f/state.deltaTime);
+    //drawSquare((HMM_Vec2){player.position.X + 150.0f, player.position.Y}, 80.0f, 0.0f, (HMM_Vec3){1.0f, 0.2f, 0.2f}, particleShaderProgram);
+    //drawRect((HMM_Vec2){player.position.X, player.position.Y + 120.0f}, (HMM_Vec2){120.0f, 60.0f}, 0.0f, (HMM_Vec3){0.2f, 1.0f, 0.2f}, particleShaderProgram);
+    //drawCircle((HMM_Vec2){player.position.X - 150.0f, player.position.Y}, 50.0f, (HMM_Vec3){0.2f, 0.2f, 1.0f}, particleShaderProgram);
+    //drawSquare((HMM_Vec2){player.position.X, player.position.Y - 120.0f}, 60.0f, state.time * 2.0f, (HMM_Vec3){1.0f, 1.0f, 0.2f}, particleShaderProgram);
+
+    /*drawDebugCircle(player.position, 150.0f, 20, (HMM_Vec3){1.0f, 0.0f, 0.0f});
+    if (bombShadow.isVisible) {
+        drawDebugSquare(bombShadowPosition, 100.0f, (HMM_Vec3){0.0f, 1.0f, 0.0f});
+    }
+    drawDebugRect(handBomb.position, 80.0f, 60.0f, (HMM_Vec3){0.0f, 0.0f, 1.0f});
+    flushDebugShapes();*/
+
+    if(1.0f/state.deltaTime < 40.0f) {
+        printf("Warning: FPS is low! Current FPS: %f\n", 1.0f/state.deltaTime);
+    }
 }
 
 void camera_update(double mousePosX, double mousePosY)
 {   
-    HMM_Vec2 playerWorld = (HMM_Vec2){(player.position.X - 0.5f*state.windowWidth), (player.position.Y - 0.5f*state.windowHeight)};
-    //HMM_Vec2 playerWorld = screenToWorld(player.position, player.scale);
-    state.camX = playerWorld.X + (mousePosX - (state.windowWidth/2.0f))/8.0f;
-    state.camY = playerWorld.Y + (mousePosY - (state.windowHeight/2.0f))/8.0f;
+    HMM_Vec2 projDims = getProjectionDimensions();
+    HMM_Vec2 playerWorld = (HMM_Vec2){(player.position.X - 0.5f*projDims.X), (player.position.Y - 0.5f*projDims.Y)};
+    HMM_Vec2 mouseWorld = mouseToWorld(mousePosX, mousePosY);
+    state.camX = playerWorld.X + (mouseWorld.X - (projDims.X/2.0f))/8.0f;
+    state.camY = playerWorld.Y + (mouseWorld.Y - (projDims.Y/2.0f))/8.0f;
 }
 
 void move_update()
@@ -255,7 +227,7 @@ void move_update()
     {   
         player.position.Y -= speed;
         if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
-            player.position.Y += speed;; // Prevent moving through walls
+            player.position.Y += speed;
         }
         camera_update(state.mouseX, state.mouseY);
     }
@@ -263,7 +235,7 @@ void move_update()
     {   
         player.position.Y += speed;
         if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
-            player.position.Y -= speed;; // Prevent moving through walls
+            player.position.Y -= speed;
         }
         camera_update(state.mouseX, state.mouseY);
     }
@@ -271,7 +243,7 @@ void move_update()
     {
         player.position.X -= speed;
         if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
-            player.position.X += speed;; // Prevent moving through walls
+            player.position.X += speed;
         }
         camera_update(state.mouseX, state.mouseY);
     }
@@ -279,7 +251,7 @@ void move_update()
     {
         player.position.X += speed;
         if(checkCSCollision((HMM_Vec2){0.7f, 0.7f}, (HMM_Vec2){0.5f, 0.5f}, player.position, 0.1f)) {
-            player.position.X -= speed;; // Prevent moving through walls
+            player.position.X -= speed;
         }
         camera_update(state.mouseX, state.mouseY);
     }
@@ -317,16 +289,21 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                 camera_update(state.mouseX, state.mouseY);
                 break;
             case GLFW_KEY_SPACE:
-                if(bombShadow.isVisible == 0) {
-                    bombShadow.position = (HMM_Vec2){player.position.X, player.position.Y};
-                    bombShadow.isVisible = 1;
-                    normDir = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
+                if(bomb.isVisible == 0) {
+                    bomb.position = (HMM_Vec2){player.position.X, player.position.Y};
+                    bombShadowPosition = (HMM_Vec2){player.position.X, player.position.Y};
+                    bomb.isVisible = 1;
+                    HMM_Vec2 projDims = getProjectionDimensions();
+                    HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
+                    normDir = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
                     initialTime = state.time;
-                    startEmitter(&bombEmitter);
+                    startEmitter(&bomb.particleEmitter);
                 } else {   
-                    normDirHandBomb = HMM_NormV2((HMM_Vec2){(float)state.windowWidth/2.0f - (float)state.mouseX, (float)state.windowHeight/2.0f - (float)state.mouseY});
-                    bombShadow.isVisible = 0;
-                    stopEmitter(&bombEmitter);
+                    HMM_Vec2 projDims = getProjectionDimensions();
+                    HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
+                    normDirHandBomb = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
+                    bomb.isVisible = 0;
+                    stopEmitter(&bomb.particleEmitter);
                 }
                 break;
             case GLFW_KEY_E:

@@ -7,6 +7,8 @@
 struct Entity;
 
 HMM_Vec2 screenToWorld(HMM_Vec2 position, HMM_Vec2 scale);
+HMM_Vec2 getProjectionDimensions();
+HMM_Vec2 mouseToWorld(double mouseX, double mouseY);
 void drawSprite(int shaderProgram, Texture* texture, HMM_Vec2 position, HMM_Vec2 scale, float rotate, HMM_Vec3 colour);
 void initSpriteRenderer();
 void drawEntity(struct Entity* entity);
