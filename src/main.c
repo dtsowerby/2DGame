@@ -12,6 +12,7 @@
 #include "utils/files.h"
 #include "utils/debug_shapes.h"
 #include "utils/random.h"
+#include "utils/memory.h"
 
 #include "gfx/shader.h"
 #include "gfx/texture.h"
@@ -31,12 +32,7 @@ State state;
 
 Entity player;
 Entity bomb;
-HMM_Vec2 bombShadowPosition;
-
-HMM_Vec2 normDir;
-HMM_Vec2 normDirHandBomb;
-float initialTime;
-float timeAfterBomb = 0;
+Entity enemy;
 
 Sound explode;
 Sound bugle;
@@ -68,8 +64,8 @@ unsigned int mapData[16][15] = {
     {24,25,27,26,27,25,27,26,27,25,26,27,28}
 };
 
-Entity entities[100];
-char entityExists[100] = {0};
+EntityList* bombEntities;
+EntityList* enemyEntities;
 
 // Map dimensions: 8x8
 // Tile dimensions: 16x16
@@ -84,6 +80,9 @@ void start()
     initSpriteRenderer();
     initDebugShapes();
     initPrimitives();
+
+    bombEntities = createEntityList(100);
+    enemyEntities = createEntityList(100);
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
     particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
@@ -109,18 +108,23 @@ void start()
     player.particleEmitter = createCharacterEmitter(player.position, 50);
     startEmitter(&player.particleEmitter);
 
-    /*enemy.shaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/sprite.frag");
-    enemy.texture = loadTexture("res/dungeonart/2D Pixel Dungeon Asset Pack/Character_animation/monsters_idle/skeleton1/v1/skeleton_v1_4.png");
-    enemy.position = (HMM_Vec2){0.2f, 0.2f};
-    enemy.scale = (HMM_Vec2){200.0f, 200.0f};
-    enemy.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
-    enemy.rotation = 0.0f;*/
+    player.position = (HMM_Vec2){500.0f, 500.0f};
+    player.scale = (HMM_Vec2){200.0f, 200.0f};
+    player.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
+    player.rotation = 0.0f;
+    player.isVisible = 1;
 
     bomb.shaderProgram = tileShaderProgram;
     bomb.scale = (HMM_Vec2){200.0f, 200.0f};
     bomb.colour = (HMM_Vec3){1.0f, 1.0f, 1.0f};
     bomb.rotation = 0.0f;
     bomb.isVisible = 1;
+
+    enemy.shaderProgram = particleShaderProgram;
+    enemy.scale = (HMM_Vec2){150.0f, 150.0f};
+    enemy.colour = (HMM_Vec3){1.0f, 0.5f, 0.5f}; // Red tinted
+    enemy.rotation = 0.0f;
+    enemy.isVisible = 1;
 
     explode = loadSound("res/sounds/boom_x.wav");
     bugle = loadSound("res/sounds/call_to_arms.wav");
@@ -156,40 +160,54 @@ void game_update()
         }
     }
     
-    timeAfterBomb = (float)(state.time - initialTime);
-    if(bomb.isVisible && sin(timeAfterBomb*7.2f) < 0.0f)
-    {
-        explosionEmitter.position = bomb.position;
-        emitBurst(&explosionEmitter, 30);
-        bomb.isVisible = 0;
-        bomb.particleEmitter.isActive = 0;
-    }
-    if(!bomb.isVisible) {
-        HMM_Vec2 projDims = getProjectionDimensions();
-        HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
-        normDirHandBomb = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
-        bomb.position.X = player.position.X - normDirHandBomb.X * 50.0f;
-        bomb.position.Y = player.position.Y - normDirHandBomb.Y * 50.0f;
-    } else {
-        bomb.position.X -= normDir.X * state.deltaTime * 400.0f;
-        bomb.position.Y -= normDir.Y * state.deltaTime * 400.0f;
-        bombShadowPosition.X -= normDir.X * state.deltaTime * 400.0f;
-        bombShadowPosition.Y -= normDir.Y * state.deltaTime * 400.0f;
+    // Update and render all bombs
+    for (int i = 0; i < getEntityListSize(bombEntities); i++) {
+        Entity* bomb = getEntityAtIndex(bombEntities, i);
+        if (bomb == NULL) continue;
+        
+        float bombTime = state.time - bomb->timeAfterBomb;
+        HMM_Vec2 direction = (HMM_Vec2){cosf(bomb->rotation), sinf(bomb->rotation)};
+        
+        bomb->position.X -= direction.X * state.deltaTime * 400.0f;
+        bomb->position.Y -= direction.Y * state.deltaTime * 400.0f;
+        
+        bomb->position.Y -= sinf(bombTime * 15.0f) * 15.0f;
 
-        bomb.position.Y -= (float)sin(timeAfterBomb*15.0f) * 15.0f;
-        drawEntity(&bomb);
-        drawSquare((HMM_Vec2){bombShadowPosition.X, bombShadowPosition.Y}, 20.0f, 45.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
-        drawSquare((HMM_Vec2){bombShadowPosition.X, bombShadowPosition.Y}, 18.0f, 135.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
+        // Temp ShadowPosition
+        bomb->scale.Y -= direction.Y * state.deltaTime * 400.0f;
+        
+        if (sin(bombTime * 7.2) < 0.0f) {
+            explosionEmitter.position = bomb->position;
+            emitBurst(&explosionEmitter, 30);
+            bomb->particleEmitter.isActive = 0;
+            
+            removeEntityAtIndex(bombEntities, i);
+            i--;
+            continue;
+        }
+        
+        updateEntity(bomb);
+        drawEntity(bomb);
+        
+        HMM_Vec2 shadowPos = (HMM_Vec2){bomb->position.X, bomb->scale.Y }; // Shadow offset
+        drawSquare(shadowPos, 20.0f, 45.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
+        drawSquare(shadowPos, 18.0f, 135.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
     }
+
+    for (int i = 0; i < getEntityListSize(enemyEntities); i++) {
+        Entity* enemyClone = getEntityAtIndex(enemyEntities, i);
+        if (enemyClone == NULL) continue;
+
+        updateEntity(enemyClone);
+        drawEntity(enemyClone);
+    }
+
+    updateEntity(&player);
+    drawEntity(&player);
     
     // Update particle systems
     updateParticleEmitter(&explosionEmitter);
     updateParticleEmitter(&smokeEmitter);
-
-    updateEntity(&player);
-    updateEntity(&bomb);
-
-    drawEntity(&player);
 
     renderParticleEmitter(&explosionEmitter, particleShaderProgram);
     renderParticleEmitter(&smokeEmitter, particleShaderProgram);
@@ -289,22 +307,21 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                 camera_update(state.mouseX, state.mouseY);
                 break;
             case GLFW_KEY_SPACE:
-                if(bomb.isVisible == 0) {
-                    bomb.position = (HMM_Vec2){player.position.X, player.position.Y};
-                    bombShadowPosition = (HMM_Vec2){player.position.X, player.position.Y};
-                    bomb.isVisible = 1;
-                    HMM_Vec2 projDims = getProjectionDimensions();
-                    HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
-                    normDir = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
-                    initialTime = state.time;
-                    startEmitter(&bomb.particleEmitter);
-                } else {   
-                    HMM_Vec2 projDims = getProjectionDimensions();
-                    HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
-                    normDirHandBomb = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
-                    bomb.isVisible = 0;
-                    stopEmitter(&bomb.particleEmitter);
-                }
+            {
+                Entity newBomb = instantiateEntity(&bomb);
+                newBomb.position = (HMM_Vec2){player.position.X, player.position.Y};
+                newBomb.scale = newBomb.position;
+                newBomb.particleEmitter = createBombEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
+                newBomb.timeAfterBomb = state.time;
+                
+                HMM_Vec2 projDims = getProjectionDimensions();
+                HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
+                HMM_Vec2 direction = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
+                newBomb.rotation = atan2f(direction.Y, direction.X);
+                
+                pushBack(bombEntities, newBomb);
+                startEmitter(&newBomb.particleEmitter);
+            }
                 break;
             case GLFW_KEY_E:
                 // Trigger explosion at player position
@@ -319,6 +336,14 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                     smokeEmitter.position = player.position;
                     startEmitter(&smokeEmitter);
                 }
+                break;
+            case GLFW_KEY_F:
+                // Instantiate Enemy
+                Entity newEnemy = instantiateEntity(&enemy);
+                newEnemy.position = player.position;
+                newEnemy.particleEmitter = createEnemyEmitter(newEnemy.position, 50);
+                pushBack(enemyEntities, newEnemy);
+                startEmitter(&newEnemy.particleEmitter);
                 break;
         }
     }

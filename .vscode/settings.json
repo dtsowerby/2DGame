@@ -114,7 +114,8 @@
         "particle.h": "c",
         "animation.h": "c",
         "util": "c",
-        "debug_shapes.h": "c"
+        "debug_shapes.h": "c",
+        "entity.h": "c"
     },
 
     "files.exclude": {

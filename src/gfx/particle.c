@@ -373,6 +373,18 @@ ParticleEmitter createCharacterEmitter(HMM_Vec2 position, int particleCount) {
     return emitter;
 }
 
+ParticleEmitter createEnemyEmitter(HMM_Vec2 position, int particleCount) {
+    ParticleEmitter emitter = createParticleEmitter(position, particleCount, PARTICLE_RADIAL);
+    emitter.emissionRate = 50.0f;
+    setEmitterVelocityRange(&emitter, (HMM_Vec2){2.0f, 2.0f}, (HMM_Vec2){50.0f, 50.0f});
+    setEmitterColorRange(&emitter, (HMM_Vec3){0.70f, 0.05f, 0.05f}, (HMM_Vec3){0.1f, 0.1f, 0.1f}); // White to black
+    setEmitterScaleRange(&emitter, 1.5f, .5f);
+    setEmitterLifeRange(&emitter, 0.25f, 0.25f);
+    setEmitterSpread(&emitter, 0.0f, 6.28318f); // Full circle
+    setEmitterDragRange(&emitter, 0.5f, 1.0f);
+    return emitter;
+}
+
 ParticleEmitter createBombEmitter(HMM_Vec2 position, int particleCount) {
     ParticleEmitter emitter = createParticleEmitter(position, particleCount, PARTICLE_RADIAL);
     emitter.emissionRate = 50.0f; // Don't emit continuously, use burst

@@ -1,7 +1,7 @@
 #include "../entity.h"
 #include <stdio.h>
 
-Entity duplicate(Entity* entity)
+Entity instantiateEntity(Entity* entity)
 {
     Entity newEntity = *entity;
     return newEntity;

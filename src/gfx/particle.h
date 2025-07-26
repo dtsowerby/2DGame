@@ -92,6 +92,7 @@ ParticleEmitter createRainEmitter(HMM_Vec2 position, float width);
 ParticleEmitter createFireEmitter(HMM_Vec2 position);
 ParticleEmitter createCharacterEmitter(HMM_Vec2 position, int particleCount);
 ParticleEmitter createBombEmitter(HMM_Vec2 position, int particleCount);
+ParticleEmitter createEnemyEmitter(HMM_Vec2 position, int particleCount);
 
 // Utility functions
 void emitParticle(ParticleEmitter* emitter);

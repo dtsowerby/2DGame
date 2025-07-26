@@ -32,7 +32,7 @@ typedef struct Entity
 
 } Entity;
 
-Entity duplicate(Entity* entity);
+Entity instantiateEntity(Entity* entity);
 
 void updateEntity(Entity* entity);
 
