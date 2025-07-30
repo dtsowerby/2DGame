@@ -6,6 +6,9 @@
 #include "ALhelpers.h"
 #include "networking/steam_helpers.h"
 
+#include "gfx/font.h"
+#include "utils/debug_shapes.h"
+
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
@@ -91,6 +94,9 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
 
         ui_update();
         update();
+
+        flushDebugShapes();
+        flushFontBatch();
 
         glfwSwapBuffers(state.window);
         glfwPollEvents();

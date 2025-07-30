@@ -19,6 +19,7 @@
 #include "gfx/sprite_renderer.h"
 #include "gfx/particle.h"
 #include "gfx/primitive.h"
+#include "gfx/font.h"
 
 #include "game/collision.h"
 
@@ -91,7 +92,6 @@ void start()
     tilemap.tileWidth = 16;
     tilemap.tileCountX = 15;
 
-    // Initialize particle system
     explosionEmitter = createExplosionEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
     smokeEmitter = createSmokeEmitter((HMM_Vec2){0.3f, 0.3f});
     bomb.particleEmitter = createBombEmitter((HMM_Vec2){0.5f, 0.5f}, 50);
@@ -151,81 +151,93 @@ void game_update()
         for(unsigned int j = 0; j < map.width; j++)
         {           
             drawTile(&tilemap, mapData[i][j], 
-                (HMM_Vec2){((float)j)*state.tileDim + sin(state.time * i) * 4.0f, 
-                ((float)i)*state.tileDim - 0.6f + cos(state.time * j) * 4.0f}, 
-                (HMM_Vec3){fabs((i+j)%2 - col_one),
-                           fabs((i+j)%2 - col_two), 
-                           fabs((i+j)%2 - col_three)}, 0,  particleShaderProgram 
+                (HMM_Vec2){((float)j)*state.tileDim + (float)sin(state.time * i) * 4.0f, 
+                ((float)i)*state.tileDim - 0.6f + (float)cos(state.time * j) * 4.0f}, 
+                (HMM_Vec3){(float)fabs((i+j)%2 - col_one),
+                           (float)fabs((i+j)%2 - col_two), 
+                           (float)fabs((i+j)%2 - col_three)}, 0,  particleShaderProgram 
             );
         }
     }
     
-    // Update and render all bombs
+    // Bomb Behaviour
     for (int i = 0; i < getEntityListSize(bombEntities); i++) {
-        Entity* bomb = getEntityAtIndex(bombEntities, i);
-        if (bomb == NULL) continue;
+        Entity* bombClone = getEntityAtIndex(bombEntities, i);
+        if (bombClone == NULL) continue;
         
-        float bombTime = state.time - bomb->timeAfterBomb;
-        HMM_Vec2 direction = (HMM_Vec2){cosf(bomb->rotation), sinf(bomb->rotation)};
+        float bombTime = state.time - bombClone->timeAfterBomb;
+        HMM_Vec2 direction = (HMM_Vec2){cosf(bombClone->rotation), sinf(bombClone->rotation)};
         
-        bomb->position.X -= direction.X * state.deltaTime * 400.0f;
-        bomb->position.Y -= direction.Y * state.deltaTime * 400.0f;
+        bombClone->position.X -= direction.X * state.deltaTime * 400.0f;
+        bombClone->position.Y -= direction.Y * state.deltaTime * 400.0f;
         
-        bomb->position.Y -= sinf(bombTime * 15.0f) * 15.0f;
+        bombClone->position.Y -= sinf(bombTime * 15.0f) * 15.0f;
 
         // Temp ShadowPosition
-        bomb->scale.Y -= direction.Y * state.deltaTime * 400.0f;
-        
+        bombClone->scale.Y -= direction.Y * state.deltaTime * 400.0f;
+
+        drawDebugCircle(bombClone->position, 30.0f, 20, (HMM_Vec3){1.0f, 0.0f, 0.0f});
+
         if (sin(bombTime * 7.2) < 0.0f) {
-            explosionEmitter.position = bomb->position;
+            explosionEmitter.position = bombClone->position;
             emitBurst(&explosionEmitter, 30);
-            bomb->particleEmitter.isActive = 0;
-            
+            bombClone->particleEmitter.isActive = 0;
+            for(int j = 0; j < getEntityListSize(enemyEntities); j++)
+            {
+                Entity* enemyClone = getEntityAtIndex(enemyEntities, j);
+                if (enemyClone == NULL) continue;
+
+                if (checkCCCollision(bombClone->position, 30, enemyClone->position, 40)) {
+                    enemyClone->particleEmitter.position = enemyClone->position;;
+                    removeEntityAtIndex(enemyEntities, j);
+                    j--;
+                }
+            }
             removeEntityAtIndex(bombEntities, i);
             i--;
             continue;
         }
         
-        updateEntity(bomb);
-        drawEntity(bomb);
+        updateEntity(bombClone);
+        drawEntity(bombClone);
         
-        HMM_Vec2 shadowPos = (HMM_Vec2){bomb->position.X, bomb->scale.Y }; // Shadow offset
+        HMM_Vec2 shadowPos = (HMM_Vec2){bombClone->position.X, bombClone->scale.Y }; // Shadow offset
         drawSquare(shadowPos, 20.0f, 45.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
         drawSquare(shadowPos, 18.0f, 135.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
     }
 
+    // Enemy Behaviour
     for (int i = 0; i < getEntityListSize(enemyEntities); i++) {
         Entity* enemyClone = getEntityAtIndex(enemyEntities, i);
         if (enemyClone == NULL) continue;
 
+        HMM_Vec2 direction = HMM_NormV2((HMM_Vec2){player.position.X - enemyClone->position.X, 
+                                         player.position.Y - enemyClone->position.Y});
+        enemyClone->position.X += direction.X * state.deltaTime * 100.0f;
+        enemyClone->position.Y += direction.Y * state.deltaTime * 100.0f;
+
         updateEntity(enemyClone);
         drawEntity(enemyClone);
+
+        drawDebugCircle(enemyClone->position, 40.0f, 20, (HMM_Vec3){0.0f, 1.0f, 0.0f});
     }
 
+    // Player Updates
     updateEntity(&player);
     drawEntity(&player);
     
-    // Update particle systems
+    // Environment Updates
     updateParticleEmitter(&explosionEmitter);
     updateParticleEmitter(&smokeEmitter);
 
     renderParticleEmitter(&explosionEmitter, particleShaderProgram);
     renderParticleEmitter(&smokeEmitter, particleShaderProgram);
-
-    //drawSquare((HMM_Vec2){player.position.X + 150.0f, player.position.Y}, 80.0f, 0.0f, (HMM_Vec3){1.0f, 0.2f, 0.2f}, particleShaderProgram);
-    //drawRect((HMM_Vec2){player.position.X, player.position.Y + 120.0f}, (HMM_Vec2){120.0f, 60.0f}, 0.0f, (HMM_Vec3){0.2f, 1.0f, 0.2f}, particleShaderProgram);
-    //drawCircle((HMM_Vec2){player.position.X - 150.0f, player.position.Y}, 50.0f, (HMM_Vec3){0.2f, 0.2f, 1.0f}, particleShaderProgram);
-    //drawSquare((HMM_Vec2){player.position.X, player.position.Y - 120.0f}, 60.0f, state.time * 2.0f, (HMM_Vec3){1.0f, 1.0f, 0.2f}, particleShaderProgram);
-
-    /*drawDebugCircle(player.position, 150.0f, 20, (HMM_Vec3){1.0f, 0.0f, 0.0f});
-    if (bombShadow.isVisible) {
-        drawDebugSquare(bombShadowPosition, 100.0f, (HMM_Vec3){0.0f, 1.0f, 0.0f});
-    }
-    drawDebugRect(handBomb.position, 80.0f, 60.0f, (HMM_Vec3){0.0f, 0.0f, 1.0f});
-    flushDebugShapes();*/
+    
+    drawString(upheaval, "Hello World!", (HMM_Vec2){100.0f, 100.0f}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, 5.0f);
+    drawString(upheaval, "Batch Rendering!", (HMM_Vec2){100.0f, 150.0f}, (HMM_Vec3){1.0f, 0.5f, 0.0f}, 1.0f);
 
     if(1.0f/state.deltaTime < 40.0f) {
-        printf("Warning: FPS is low! Current FPS: %f\n", 1.0f/state.deltaTime);
+        printf("FPS below 40: %f\n", 1.0f/state.deltaTime);
     }
 }
 

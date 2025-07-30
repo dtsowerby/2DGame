@@ -115,7 +115,8 @@
         "animation.h": "c",
         "util": "c",
         "debug_shapes.h": "c",
-        "entity.h": "c"
+        "entity.h": "c",
+        "font.h": "c"
     },
 
     "files.exclude": {
