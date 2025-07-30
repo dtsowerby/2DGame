@@ -26,6 +26,12 @@ inline void setUniformVec3(const char* name, HMM_Vec3 v, unsigned int shaderProg
     glUniform3fv(location, 1, v.Elements);
 }
 
+inline void setUniformVec2(const char* name, HMM_Vec2 v, unsigned int shaderProgram)
+{
+    GLint location = glGetUniformLocation(shaderProgram, name);
+    glUniform2fv(location, 1, v.Elements);
+}
+
 inline void setUniformFloat(const char* name, float f, unsigned int shaderProgram)
 {
     GLint location = glGetUniformLocation(shaderProgram, name);

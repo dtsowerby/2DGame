@@ -20,6 +20,7 @@
 #include "gfx/particle.h"
 #include "gfx/primitive.h"
 #include "gfx/font.h"
+#include "gfx/postprocess.h"
 
 #include "game/collision.h"
 
@@ -41,7 +42,8 @@ Sound bugle;
 unsigned int tileShaderProgram;
 unsigned int particleShaderProgram;
 
-// Particle system
+PostProcessor postProcessor;
+
 ParticleEmitter explosionEmitter;
 ParticleEmitter smokeEmitter;
 
@@ -87,6 +89,8 @@ void start()
 
     tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
     particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
+
+    initPostProcessor(&postProcessor, state.windowWidth, state.windowHeight);
     
     tilemap.texture = loadTexture("res/art/tiles1.0.png");
     tilemap.tileWidth = 16;
@@ -143,6 +147,7 @@ void start()
 int pt = 0;
 void game_update()
 {   
+
     move_update();
 
     //Generate map
@@ -235,6 +240,16 @@ void game_update()
     
     drawString(upheaval, "Hello World!", (HMM_Vec2){100.0f, 100.0f}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, 5.0f);
     drawString(upheaval, "Batch Rendering!", (HMM_Vec2){100.0f, 150.0f}, (HMM_Vec3){1.0f, 0.5f, 0.0f}, 1.0f);
+    
+    // Post-processing controls UI
+    char vignetteText[64];
+    char chromaticText[64];
+    sprintf(vignetteText, "Vignette (1/2): %.2f", postProcessor.vignetteStrength);
+    sprintf(chromaticText, "Chromatic (3/4): %.4f", postProcessor.chromaticAberrationStrength);
+    
+    drawString(upheaval, vignetteText, (HMM_Vec2){20.0f, 20.0f}, (HMM_Vec3){0.8f, 0.8f, 1.0f}, 0.8f);
+    drawString(upheaval, chromaticText, (HMM_Vec2){20.0f, 50.0f}, (HMM_Vec3){0.8f, 0.8f, 1.0f}, 0.8f);
+    drawString(upheaval, "Post-Processing Demo", (HMM_Vec2){20.0f, 80.0f}, (HMM_Vec3){1.0f, 1.0f, 0.0f}, 1.0f);
 
     if(1.0f/state.deltaTime < 40.0f) {
         printf("FPS below 40: %f\n", 1.0f/state.deltaTime);
@@ -299,6 +314,7 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
         switch(key)
         {
             case GLFW_KEY_ESCAPE:
+                //cleanupPostProcessor(&postProcessor);
                 glfwTerminate();
                 exit(0);
                 break;
@@ -356,6 +372,26 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                 newEnemy.particleEmitter = createEnemyEmitter(newEnemy.position, 50);
                 pushBack(enemyEntities, newEnemy);
                 startEmitter(&newEnemy.particleEmitter);
+                break;
+            case GLFW_KEY_1:
+                // Decrease vignette strength
+                postProcessor.vignetteStrength = HMM_MAX(0.0f, postProcessor.vignetteStrength - 0.1f);
+                printf("Vignette strength: %.2f\n", postProcessor.vignetteStrength);
+                break;
+            case GLFW_KEY_2:
+                // Increase vignette strength  
+                postProcessor.vignetteStrength = HMM_MIN(2.0f, postProcessor.vignetteStrength + 0.1f);
+                printf("Vignette strength: %.2f\n", postProcessor.vignetteStrength);
+                break;
+            case GLFW_KEY_3:
+                // Decrease chromatic aberration
+                postProcessor.chromaticAberrationStrength = HMM_MAX(0.0f, postProcessor.chromaticAberrationStrength - 0.001f);
+                printf("Chromatic aberration: %.4f\n", postProcessor.chromaticAberrationStrength);
+                break;
+            case GLFW_KEY_4:
+                // Increase chromatic aberration
+                postProcessor.chromaticAberrationStrength = HMM_MIN(0.01f, postProcessor.chromaticAberrationStrength + 0.001f);
+                printf("Chromatic aberration: %.4f\n", postProcessor.chromaticAberrationStrength);
                 break;
         }
     }

@@ -7,7 +7,10 @@
 #include "networking/steam_helpers.h"
 
 #include "gfx/font.h"
+#include "gfx/postprocess.h"
 #include "utils/debug_shapes.h"
+
+extern PostProcessor postProcessor;
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
@@ -17,6 +20,7 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     state.windowWidth = width;
     state.windowHeight = height;
     glViewport(0, 0, width, height);
+    resizePostProcessor(&postProcessor, width, height);
 }
 
 void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindow* window, int key, int scancode, int action, int mods), void (*ui_update)())
@@ -84,19 +88,25 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
 
     float lastFrame = 0.0f;
 
+    glDisable(GL_DEPTH_TEST);
+
     while(!glfwWindowShouldClose(state.window))
     {      
         float currentFrame = (float)glfwGetTime();
         state.deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;  
         state.time += state.deltaTime;
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        beginPostProcessing(&postProcessor);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         ui_update();
         update();
 
         flushDebugShapes();
         flushFontBatch();
+
+        endPostProcessing(&postProcessor);
+        renderPostProcessed(&postProcessor, state.time);
 
         glfwSwapBuffers(state.window);
         glfwPollEvents();
