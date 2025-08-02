@@ -114,8 +114,6 @@ void renderPostProcessed(PostProcessor* processor, float time)
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
     
-    // Keep depth testing disabled for 2D rendering
-    // glEnable(GL_DEPTH_TEST); // Commented out - keep disabled for proper 2D layering
 }
 
 void resizePostProcessor(PostProcessor* processor, int width, int height)

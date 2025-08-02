@@ -2,6 +2,13 @@
 
 #include <glfw3.h>
 
+typedef enum GameState {
+    STATE_GAMEPLAY,
+    STATE_CUSTOMIZE,
+    STATE_MENU,
+    STATE_SETTINGS
+} GameState;
+
 typedef struct State
 {
     GLFWwindow* window;
@@ -27,6 +34,8 @@ typedef struct State
 
     int referenceWidth;
     int referenceHeight;
+
+    GameState gameState;
 } State;
 
 extern struct State state;

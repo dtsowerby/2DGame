@@ -13,7 +13,7 @@
 
 #include "state.h"
 
-#define MAX_DEBUG_LINES 1000
+#define MAX_DEBUG_LINES 2000
 #define DEBUG_LINE_VERTEX_COUNT (MAX_DEBUG_LINES * 2)
 
 typedef struct DebugLine {

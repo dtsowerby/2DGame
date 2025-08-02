@@ -8,11 +8,20 @@
 
 #include "gfx/font.h"
 #include "gfx/postprocess.h"
+#include "gfx/sprite_renderer.h"
+
 #include "utils/debug_shapes.h"
 
 extern PostProcessor postProcessor;
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+
+float getMouseAngle() {
+    HMM_Vec2 projDims = getProjectionDimensions();
+    HMM_Vec2 mouseWorld = mouseToWorld(state.mouseX, state.mouseY);
+    HMM_Vec2 direction = HMM_NormV2((HMM_Vec2){projDims.X/2.0f - mouseWorld.X, projDims.Y/2.0f - mouseWorld.Y});
+    return atan2f(direction.Y, direction.X);
+}
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     (void)window;
@@ -99,11 +108,8 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
         beginPostProcessing(&postProcessor);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ui_update();
         update();
-
-        flushDebugShapes();
-        flushFontBatch();
+        ui_update();
 
         endPostProcessing(&postProcessor);
         renderPostProcessed(&postProcessor, state.time);

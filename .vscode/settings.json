@@ -116,7 +116,10 @@
         "util": "c",
         "debug_shapes.h": "c",
         "entity.h": "c",
-        "font.h": "c"
+        "font.h": "c",
+        "postprocess.h": "c",
+        "collision.h": "c",
+        "ui.h": "c"
     },
 
     "files.exclude": {

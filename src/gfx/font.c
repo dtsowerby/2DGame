@@ -245,6 +245,7 @@ void drawString(Font font, const char* str, HMM_Vec2 position, HMM_Vec3 color, f
         }
         
         // Draw the character
+        drawChar(font, c, (HMM_Vec2){currentPos.X + scale/0.5f, currentPos.Y + scale/0.5f}, (HMM_Vec3){color.X - 0.5f, color.Y - 0.5f, color.Z - 0.5f}, scale);
         drawChar(font, c, currentPos, color, scale);
         
         // Advance position for next character

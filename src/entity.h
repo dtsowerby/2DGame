@@ -27,9 +27,11 @@ typedef struct Entity
     // ENTITY TYPE SPECIFIC
 
     //Bomb
-    float timeAfterBomb;
+    float timeAfterInstantiation;
     HMM_Vec2 bombShadowPosition;
 
+    // Projectile
+    int projectileType;
 } Entity;
 
 Entity instantiateEntity(Entity* entity);
