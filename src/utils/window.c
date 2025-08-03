@@ -3,7 +3,7 @@
 #include <glad.h>
 #include "state.h"
 #include "utils/sound.h"
-#include "ALhelpers.h"
+#include "alhelpers.h"
 #include "networking/steam_helpers.h"
 
 #include "gfx/font.h"

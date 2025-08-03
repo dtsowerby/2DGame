@@ -1,12 +1,14 @@
 #pragma once
 
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 
 typedef enum GameState {
     STATE_GAMEPLAY,
     STATE_CUSTOMIZE,
     STATE_MENU,
-    STATE_SETTINGS
+    STATE_SETTINGS,
+    STATE_TUTORIAL,
+    STATE_DEATH
 } GameState;
 
 typedef struct State
@@ -36,6 +38,11 @@ typedef struct State
     int referenceHeight;
 
     GameState gameState;
+    unsigned int stage;
+    int stageCleared;
+
+    unsigned int highScore;
+    int tutorial;
 } State;
 
 extern struct State state;

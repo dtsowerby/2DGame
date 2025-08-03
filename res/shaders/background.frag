@@ -1,9 +1,9 @@
 #version 330 core
-
+//https://www.shadertoy.com/view/Xd23Dh inigo quilez
 in vec2 fragCoords;
 out vec4 colour;
 
-uniform float time; // Time variable for scrolling
+uniform float time;
 
 vec3 hash3( vec2 p )
 {

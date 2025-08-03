@@ -59,9 +59,14 @@ void drawBackground(HMM_Vec2 position, float rotation, int shaderProgram)
 
     HMM_Mat4 model = HMM_M4D(1.0f);
 
-    HMM_Vec2 worldPos = screenToWorld(position, (HMM_Vec2){projDims.X*2.0f, projDims.Y*2.0f});
+    HMM_Vec2 size = (HMM_Vec2){projDims.X*2.0f, projDims.Y*2.0f};
+    HMM_Vec2 worldPos = screenToWorld(position, size);
+    
     model = HMM_MulM4(model, HMM_Translate((HMM_Vec3){worldPos.X, worldPos.Y, 0.0f}));
-    model = HMM_MulM4(model, HMM_Scale((HMM_Vec3){projDims.X*2.0f, projDims.Y*2.0f, 1.0f}));
+    model = HMM_MulM4(model, HMM_Translate((HMM_Vec3){size.X * 0.5f, size.Y * 0.5f, 0.0f}));
+    model = HMM_MulM4(model, HMM_Rotate_RH(rotation, (HMM_Vec3){0.0f, 0.0f, 1.0f}));
+    model = HMM_MulM4(model, HMM_Translate((HMM_Vec3){-size.X * 0.5f, -size.Y * 0.5f, 0.0f}));
+    model = HMM_MulM4(model, HMM_Scale((HMM_Vec3){size.X, size.Y, 1.0f}));
 
     setUniformMat4("model", model, shaderProgram);
     setUniformFloat("time", state.time, shaderProgram);

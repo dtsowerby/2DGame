@@ -24,8 +24,9 @@
 
 /* This file contains an example for playing a sound buffer. */
 
-
 #pragma once
+
+#ifndef __EMSCRIPTEN__
 
 #include <assert.h>
 #include <inttypes.h>
@@ -47,6 +48,17 @@
 /* LoadBuffer loads the named audio file into an OpenAL buffer object, and
  * returns the new buffer ID.
  */
+
+void pauseSound(Sound source)
+{
+    alSourcePause(source);
+}
+void resumeSound(Sound source)
+{
+    alSourcePlay(source);
+}
+
+
 ALuint LoadSoundBuffer(const char *filename)
 {
     enum FormatType sample_format = Int16;
@@ -178,10 +190,10 @@ ALuint LoadSoundBuffer(const char *filename)
             format = AL_FORMAT_MONO16;
         else if(sample_format == Float)
             format = AL_FORMAT_MONO_FLOAT32;
-        else if(sample_format == IMA4)
-            format = AL_FORMAT_MONO_IMA4;
-        else if(sample_format == MSADPCM)
-            format = AL_FORMAT_MONO_MSADPCM_SOFT;
+        //else if(sample_format == IMA4)
+            //format = AL_FORMAT_MONO_IMA4;
+        //else if(sample_format == MSADPCM)
+            //format = AL_FORMAT_MONO_MSADPCM_SOFT;
     }
     else if(sfinfo.channels == 2)
     {
@@ -189,12 +201,12 @@ ALuint LoadSoundBuffer(const char *filename)
             format = AL_FORMAT_STEREO16;
         else if(sample_format == Float)
             format = AL_FORMAT_STEREO_FLOAT32;
-        else if(sample_format == IMA4)
-            format = AL_FORMAT_STEREO_IMA4;
-        else if(sample_format == MSADPCM)
-            format = AL_FORMAT_STEREO_MSADPCM_SOFT;
+        //else if(sample_format == IMA4)
+            //format = AL_FORMAT_STEREO_IMA4;
+        //else if(sample_format == MSADPCM)
+            //format = AL_FORMAT_STEREO_MSADPCM_SOFT;
     }
-    else if(sfinfo.channels == 3)
+    /*else if(sfinfo.channels == 3)
     {
         if(sf_command(sndfile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
         {
@@ -213,7 +225,7 @@ ALuint LoadSoundBuffer(const char *filename)
             else if(sample_format == Float)
                 format = AL_FORMAT_BFORMAT3D_FLOAT32;
         }
-    }
+    }*/
     if(!format)
     {
         fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
@@ -259,8 +271,8 @@ ALuint LoadSoundBuffer(const char *filename)
      */
     buffer = 0;
     alGenBuffers(1, &buffer);
-    if(splblockalign > 1)
-        alBufferi(buffer, AL_UNPACK_BLOCK_ALIGNMENT_SOFT, splblockalign);
+    //if(splblockalign > 1)
+        //alBufferi(buffer, AL_UNPACK_BLOCK_ALIGNMENT_SOFT, splblockalign);
     alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate);
 
     free(membuf);
@@ -295,8 +307,20 @@ ALuint loadSound(const char *filename)
 
 void playSound(ALuint source)
 {
-    //ALfloat offset;
-    //ALenum state;
+    /* Check if source is valid before using it */
+    if (!alIsSource(source)) {
+        fprintf(stderr, "Invalid audio source\n");
+        return;
+    }
+
+    /* Set volume (gain) - 1.0f is full volume, 0.5f is half volume, etc. */
+    alSourcef(source, AL_GAIN, 1.0f);
+    
+    /* Check for errors after setting gain */
+    ALenum error = alGetError();
+    if (error != AL_NO_ERROR) {
+        fprintf(stderr, "OpenAL Error setting gain: %s\n", alGetString(error));
+    }
 
     /* Play the sound until it finishes. */
     alSourcePlay(source);
@@ -319,3 +343,55 @@ void playSound(ALuint source)
     CloseAL();
     */
 }
+
+void playSoundLoop(ALuint source)
+{
+    alSourcef(source, AL_GAIN, 0.2f);
+    alSourcei(source, AL_LOOPING, AL_TRUE);
+    alSourcePlay(source);
+}
+
+#endif // Not __EMSCRIPTEN__
+
+#ifdef __EMSCRIPTEN__
+
+#include <stdio.h>
+#include <string.h>
+#include <emscripten.h>
+#include "sound.h"
+Sound LoadSoundBuffer(const char *filename)
+{
+    // In Emscripten, we don't actually load the sound into a buffer.
+}
+Sound loadSound(const char *filename)
+{
+    return filename;
+}
+
+void playSound(const char *filename) {
+    char js[256];
+    snprintf(js, sizeof(js), "playOneShot('%s')", filename);
+    emscripten_run_script(js);
+}
+
+void playSoundLoop(const char *filename) {
+    char js[256];
+    snprintf(js, sizeof(js), "playLoop('%s')", filename);
+    emscripten_run_script(js);
+}
+
+void pauseSound(Sound source)
+{
+    char js[256];
+    snprintf(js, sizeof(js), "pauseSound('%s')", source);
+    emscripten_run_script(js);
+}
+
+void resumeSound(Sound source)
+{
+    char js[256];
+    snprintf(js, sizeof(js), "resumeSound('%s')", source);
+    emscripten_run_script(js);
+}
+
+#endif // __EMSCRIPTEN__

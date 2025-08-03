@@ -1,0 +1,36 @@
+CMakeFiles/Game.dir/src/utils/sound.c.o: \
+  D:\Repos\2DGame\src\utils\sound.c \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stdio.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\wasi\api.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\stddef.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stddef.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_header_macro.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_ptrdiff_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_size_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_wchar_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_null.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_max_align_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_offsetof.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\stdint.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stdint.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\bits\alltypes.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\bits\stdint.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\features.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\string.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\string.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\strings.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\emscripten.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\em_asm.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\em_macros.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\em_types.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\stdbool.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stdbool.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\em_js.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\promise.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\stdlib.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stdlib.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\alloca.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\wget.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\emscripten\version.h \
+  D:\Repos\2DGame\src\utils\sound.h

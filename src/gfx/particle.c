@@ -314,13 +314,13 @@ ParticleEmitter createExplosionEmitter(HMM_Vec2 position, int particleCount) {
     return emitter;
 }
 
-ParticleEmitter createSmokeEmitter(HMM_Vec2 position) {
+ParticleEmitter createSmokeEmitter(HMM_Vec2 position, HMM_Vec3 colour) {
     ParticleEmitter emitter = createParticleEmitter(position, 50, PARTICLE_LINEAR);
     emitter.emissionRate = 5.0f;
-    setEmitterVelocityRange(&emitter, (HMM_Vec2){-0.5f, -2.0f}, (HMM_Vec2){50.0f, -50.0f});
-    setEmitterColorRange(&emitter, (HMM_Vec3){0.8f, 0.8f, 0.8f}, (HMM_Vec3){0.2f, 0.2f, 0.2f}); // Light to dark gray
-    setEmitterScaleRange(&emitter, 0.5f, 2.0f);
-    setEmitterLifeRange(&emitter, 2.0f, 4.0f);
+    setEmitterVelocityRange(&emitter, (HMM_Vec2){-0.5f, -2.0f}, (HMM_Vec2){-5.0f, -10.0f});
+    setEmitterColorRange(&emitter, colour, (HMM_Vec3){0.2f, 0.2f, 0.2f});
+    setEmitterScaleRange(&emitter, 0.25f, 0.5f);
+    setEmitterLifeRange(&emitter, 0.5f, 1.0f);
     setEmitterDragRange(&emitter, 0.1f, 0.3f);
     return emitter;
 }
@@ -373,11 +373,11 @@ ParticleEmitter createCharacterEmitter(HMM_Vec2 position, int particleCount) {
     return emitter;
 }
 
-ParticleEmitter createEnemyEmitter(HMM_Vec2 position, int particleCount) {
+ParticleEmitter createEnemyEmitter(HMM_Vec2 position, HMM_Vec3 colour, int particleCount) {
     ParticleEmitter emitter = createParticleEmitter(position, particleCount, PARTICLE_RADIAL);
     emitter.emissionRate = 50.0f;
     setEmitterVelocityRange(&emitter, (HMM_Vec2){2.0f, 2.0f}, (HMM_Vec2){50.0f, 50.0f});
-    setEmitterColorRange(&emitter, (HMM_Vec3){0.70f, 0.05f, 0.05f}, (HMM_Vec3){0.1f, 0.1f, 0.1f}); // White to black
+    setEmitterColorRange(&emitter, colour, (HMM_Vec3){0.1f, 0.1f, 0.1f}); // White to black
     setEmitterScaleRange(&emitter, 1.5f, .5f);
     setEmitterLifeRange(&emitter, 0.25f, 0.25f);
     setEmitterSpread(&emitter, 0.0f, 6.28318f); // Full circle

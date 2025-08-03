@@ -10,5 +10,5 @@ void init_random()
 
 float random_range(float min, float max)
 {
-    return min + (rand() / (RAND_MAX + 1.0f)) * (max - min);
+    return min + ((float)rand() / ((float)RAND_MAX + 1.0f)) * (max - min);
 }

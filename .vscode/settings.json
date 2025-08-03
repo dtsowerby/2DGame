@@ -119,7 +119,11 @@
         "font.h": "c",
         "postprocess.h": "c",
         "collision.h": "c",
-        "ui.h": "c"
+        "ui.h": "c",
+        "glfw3.h": "c",
+        "*.inc": "c",
+        "random.h": "c",
+        "al.h": "c"
     },
 
     "files.exclude": {

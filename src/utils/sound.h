@@ -24,9 +24,10 @@
 
 /* This file contains an example for playing a sound buffer. */
 
-
-#pragma once
-
+#ifdef __EMSCRIPTEN__
+typedef const char* Sound;
+#else
+#include <AL/al.h>
 typedef unsigned int ALuint;
 typedef ALuint Sound;
 
@@ -36,10 +37,11 @@ enum FormatType {
     IMA4,
     MSADPCM
 };
+#endif
 
-/* LoadBuffer loads the named audio file into an OpenAL buffer object, and
- * returns the new buffer ID.
- */
-ALuint LoadSoundBuffer(const char *filename);
-ALuint loadSound(const char *filename);
-void playSound(ALuint source);
+Sound LoadSoundBuffer(const char *filename);
+Sound loadSound(const char *filename);
+void playSound(Sound source);
+void playSoundLoop(Sound source);
+void pauseSound(Sound source);
+void resumeSound(Sound source);

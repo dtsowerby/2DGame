@@ -5,6 +5,21 @@
 #include "gfx/animation.h"
 #include "gfx/particle.h"
 
+typedef enum EnemyType {
+    ENEMY_TYPE_BASIC,
+    ENEMY_TYPE_FAST,
+    ENEMY_TYPE_TANK,
+    ENEMY_TYPE_SHOOT,
+    ENEMY_TYPE_BOSS
+} EnemyType;
+
+typedef enum ItemType {
+    ITEM_TYPE_COIN,
+    ITEM_TYPE_HEALTH,
+    ITEM_TYPE_POWERUP,
+    ITEM_TYPE_FREEZE
+} ItemType;
+
 typedef struct Entity
 {
     unsigned int shaderProgram; 
@@ -32,6 +47,14 @@ typedef struct Entity
 
     // Projectile
     int projectileType;
+
+    //Enemy
+    EnemyType enemyType;
+    HMM_Vec3 enemyColour;
+    int health;
+
+    //Item
+    ItemType itemType;
 } Entity;
 
 Entity instantiateEntity(Entity* entity);

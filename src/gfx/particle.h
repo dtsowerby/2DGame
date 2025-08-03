@@ -86,13 +86,13 @@ void setEmitterDragRange(ParticleEmitter* emitter, float minDrag, float maxDrag)
 
 // Preset emitter configurations
 ParticleEmitter createExplosionEmitter(HMM_Vec2 position, int particleCount);
-ParticleEmitter createSmokeEmitter(HMM_Vec2 position);
+ParticleEmitter createSmokeEmitter(HMM_Vec2 position, HMM_Vec3 colour);
 ParticleEmitter createSparkEmitter(HMM_Vec2 position);
 ParticleEmitter createRainEmitter(HMM_Vec2 position, float width);
 ParticleEmitter createFireEmitter(HMM_Vec2 position);
 ParticleEmitter createCharacterEmitter(HMM_Vec2 position, int particleCount);
 ParticleEmitter createBombEmitter(HMM_Vec2 position, int particleCount);
-ParticleEmitter createEnemyEmitter(HMM_Vec2 position, int particleCount);
+ParticleEmitter createEnemyEmitter(HMM_Vec2 position, HMM_Vec3 colour, int particleCount);
 ParticleEmitter createProjectileEmitter(HMM_Vec2 position, int particleCount);
 
 // Utility functions

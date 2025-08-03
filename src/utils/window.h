@@ -10,3 +10,18 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
 
 // Prolly won't use
 void Cleanup();
+
+void toggleFullscreen(GLFWwindow* window) {
+    if (glfwGetWindowMonitor(window)) {
+        int xpos, ypos, width, height;
+        xpos = 100;
+        ypos = 100;
+        width = 800;
+        height = 600;
+        glfwSetWindowMonitor(window, NULL, xpos, ypos, width, height, 0);
+    } else {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    }
+}

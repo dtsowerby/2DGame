@@ -1,0 +1,26 @@
+CMakeFiles/Game.dir/src/gfx/sprite_renderer.c.o: \
+  D:\Repos\2DGame\src\gfx\sprite_renderer.c \
+  D:\Repos\2DGame\lib\glad\include\glad\glad.h \
+  D:\Repos\2DGame\lib\glad\include\KHR\khrplatform.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\stdint.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stdint.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\bits\alltypes.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\bits\stdint.h \
+  D:\Repos\2DGame\lib\HandmadeMath\HandmadeMath.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\math.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\math.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\features.h \
+  D:\Repos\2DGame\src\gfx\texture.h D:\Repos\2DGame\src\gfx\shader.h \
+  D:\Repos\2DGame\src\entity.h D:\Repos\2DGame\src\gfx\animation.h \
+  D:\Repos\2DGame\src\gfx\particle.h D:\Repos\2DGame\src\state.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\GLFW\glfw3.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\stddef.h \
+  D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\stddef.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_header_macro.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_ptrdiff_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_size_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_wchar_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_null.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_max_align_t.h \
+  D:\Repos\emsdk\upstream\lib\clang\22\include\__stddef_offsetof.h \
+  D:\Repos\2DGame\src\gfx\sprite_renderer.h

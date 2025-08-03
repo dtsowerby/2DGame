@@ -1,0 +1,2 @@
+D:\Repos\emsdk\upstream\emscripten\emar.bat qc libglad.a CMakeFiles/glad.dir/src/glad.c.o
+D:\Repos\emsdk\upstream\emscripten\emranlib.bat libglad.a

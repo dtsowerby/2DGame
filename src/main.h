@@ -23,6 +23,7 @@ void addSegment(EntityList* segmentsList, HMM_Vec3 colour)
 
 void checkWheel()
 {   
+    if(state.stageCleared == 1 || switchingScene == 1) return;
     wheel_colour = -1.0f;
 
     for(int i = 0; i < getEntityListSize(segments); i++) {
@@ -64,7 +65,12 @@ void checkWheel()
             newProjectile.projectileType = 0;
         }
 
+        setEmitterScaleRange(&newProjectile.particleEmitter, 0.25f * powerUp * (lastShot/0.08f) * getEntityListSize(segments)/20.0f, 0.5f * powerUp * (lastShot/0.1f) * getEntityListSize(segments)/15.0f);
+        newProjectile.health = powerUp * 1.3f * (lastShot/0.08f) * getEntityListSize(segments)/15.0f;
+
         pushBack(projectileEntities, newProjectile);
         startEmitter(&newProjectile.particleEmitter);
+        playSound(shoot);
+        lastShot = 0.0f;
     }
 }

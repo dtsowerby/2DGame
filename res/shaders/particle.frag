@@ -7,6 +7,6 @@ uniform vec3 spriteColour;
 
 void main()
 {    
-    // Simple solid color output for particles
+    // colour
     fragColour = vec4(spriteColour, 1.0);
 }

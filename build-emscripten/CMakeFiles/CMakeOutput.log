@@ -1,0 +1,204 @@
+Determining size of off_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_24a13/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_24a13.dir\build.make CMakeFiles/cmTC_24a13.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_24a13.dir/SIZEOF_OFF_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_24a13.dir/SIZEOF_OFF_T.c.o -MF CMakeFiles\cmTC_24a13.dir\SIZEOF_OFF_T.c.o.d -o CMakeFiles\cmTC_24a13.dir\SIZEOF_OFF_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_OFF_T.c
+Linking C executable cmTC_24a13.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_24a13.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_24a13.dir\objects1.rsp -o cmTC_24a13.js @CMakeFiles\cmTC_24a13.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of int64_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_4a046/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_4a046.dir\build.make CMakeFiles/cmTC_4a046.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4a046.dir/SIZEOF_INT64_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_4a046.dir/SIZEOF_INT64_T.c.o -MF CMakeFiles\cmTC_4a046.dir\SIZEOF_INT64_T.c.o.d -o CMakeFiles\cmTC_4a046.dir\SIZEOF_INT64_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_INT64_T.c
+Linking C executable cmTC_4a046.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_4a046.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_4a046.dir\objects1.rsp -o cmTC_4a046.js @CMakeFiles\cmTC_4a046.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_04fd7/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_04fd7.dir\build.make CMakeFiles/cmTC_04fd7.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_04fd7.dir/SIZEOF_LONG.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_04fd7.dir/SIZEOF_LONG.c.o -MF CMakeFiles\cmTC_04fd7.dir\SIZEOF_LONG.c.o.d -o CMakeFiles\cmTC_04fd7.dir\SIZEOF_LONG.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_LONG.c
+Linking C executable cmTC_04fd7.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_04fd7.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_04fd7.dir\objects1.rsp -o cmTC_04fd7.js @CMakeFiles\cmTC_04fd7.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long long passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_5592c/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_5592c.dir\build.make CMakeFiles/cmTC_5592c.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5592c.dir/SIZEOF_LONG_LONG.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_5592c.dir/SIZEOF_LONG_LONG.c.o -MF CMakeFiles\cmTC_5592c.dir\SIZEOF_LONG_LONG.c.o.d -o CMakeFiles\cmTC_5592c.dir\SIZEOF_LONG_LONG.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_LONG_LONG.c
+Linking C executable cmTC_5592c.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_5592c.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_5592c.dir\objects1.rsp -o cmTC_5592c.js @CMakeFiles\cmTC_5592c.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of ssize_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_06d4e/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_06d4e.dir\build.make CMakeFiles/cmTC_06d4e.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_06d4e.dir/SIZEOF_SSIZE_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_06d4e.dir/SIZEOF_SSIZE_T.c.o -MF CMakeFiles\cmTC_06d4e.dir\SIZEOF_SSIZE_T.c.o.d -o CMakeFiles\cmTC_06d4e.dir\SIZEOF_SSIZE_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_SSIZE_T.c
+Linking C executable cmTC_06d4e.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_06d4e.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_06d4e.dir\objects1.rsp -o cmTC_06d4e.js @CMakeFiles\cmTC_06d4e.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of wchar_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_b0692/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_b0692.dir\build.make CMakeFiles/cmTC_b0692.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b0692.dir/SIZEOF_WCHAR_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_b0692.dir/SIZEOF_WCHAR_T.c.o -MF CMakeFiles\cmTC_b0692.dir\SIZEOF_WCHAR_T.c.o.d -o CMakeFiles\cmTC_b0692.dir\SIZEOF_WCHAR_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_WCHAR_T.c
+Linking C executable cmTC_b0692.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_b0692.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_b0692.dir\objects1.rsp -o cmTC_b0692.js @CMakeFiles\cmTC_b0692.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of off_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_f4c1c/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_f4c1c.dir\build.make CMakeFiles/cmTC_f4c1c.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f4c1c.dir/SIZEOF_OFF_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_f4c1c.dir/SIZEOF_OFF_T.c.o -MF CMakeFiles\cmTC_f4c1c.dir\SIZEOF_OFF_T.c.o.d -o CMakeFiles\cmTC_f4c1c.dir\SIZEOF_OFF_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_OFF_T.c
+Linking C executable cmTC_f4c1c.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_f4c1c.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_f4c1c.dir\objects1.rsp -o cmTC_f4c1c.js @CMakeFiles\cmTC_f4c1c.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of int64_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_efbd2/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_efbd2.dir\build.make CMakeFiles/cmTC_efbd2.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_efbd2.dir/SIZEOF_INT64_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_efbd2.dir/SIZEOF_INT64_T.c.o -MF CMakeFiles\cmTC_efbd2.dir\SIZEOF_INT64_T.c.o.d -o CMakeFiles\cmTC_efbd2.dir\SIZEOF_INT64_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_INT64_T.c
+Linking C executable cmTC_efbd2.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_efbd2.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_efbd2.dir\objects1.rsp -o cmTC_efbd2.js @CMakeFiles\cmTC_efbd2.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_092c6/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_092c6.dir\build.make CMakeFiles/cmTC_092c6.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_092c6.dir/SIZEOF_LONG.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_092c6.dir/SIZEOF_LONG.c.o -MF CMakeFiles\cmTC_092c6.dir\SIZEOF_LONG.c.o.d -o CMakeFiles\cmTC_092c6.dir\SIZEOF_LONG.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_LONG.c
+Linking C executable cmTC_092c6.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_092c6.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_092c6.dir\objects1.rsp -o cmTC_092c6.js @CMakeFiles\cmTC_092c6.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long long passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_343bd/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_343bd.dir\build.make CMakeFiles/cmTC_343bd.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_343bd.dir/SIZEOF_LONG_LONG.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_343bd.dir/SIZEOF_LONG_LONG.c.o -MF CMakeFiles\cmTC_343bd.dir\SIZEOF_LONG_LONG.c.o.d -o CMakeFiles\cmTC_343bd.dir\SIZEOF_LONG_LONG.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_LONG_LONG.c
+Linking C executable cmTC_343bd.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_343bd.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_343bd.dir\objects1.rsp -o cmTC_343bd.js @CMakeFiles\cmTC_343bd.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of ssize_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_6d607/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_6d607.dir\build.make CMakeFiles/cmTC_6d607.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6d607.dir/SIZEOF_SSIZE_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_6d607.dir/SIZEOF_SSIZE_T.c.o -MF CMakeFiles\cmTC_6d607.dir\SIZEOF_SSIZE_T.c.o.d -o CMakeFiles\cmTC_6d607.dir\SIZEOF_SSIZE_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_SSIZE_T.c
+Linking C executable cmTC_6d607.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_6d607.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_6d607.dir\objects1.rsp -o cmTC_6d607.js @CMakeFiles\cmTC_6d607.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of wchar_t passed with the following output:
+Change Dir: 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/MinGW/bin/mingw32-make.exe -f Makefile cmTC_9459c/fast
+mingw32-make.exe[1]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_9459c.dir\build.make CMakeFiles/cmTC_9459c.dir/build
+mingw32-make.exe[2]: Entering directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9459c.dir/SIZEOF_WCHAR_T.c.o
+D:\Repos\emsdk\upstream\emscripten\emcc.bat   -std=gnu99 -MD -MT CMakeFiles/cmTC_9459c.dir/SIZEOF_WCHAR_T.c.o -MF CMakeFiles\cmTC_9459c.dir\SIZEOF_WCHAR_T.c.o.d -o CMakeFiles\cmTC_9459c.dir\SIZEOF_WCHAR_T.c.o -c D:\Repos\2DGame\build-emscripten\CMakeFiles\CheckTypeSize\SIZEOF_WCHAR_T.c
+Linking C executable cmTC_9459c.js
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_9459c.dir\link.txt --verbose=1
+D:\Repos\emsdk\upstream\emscripten\emcc.bat  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1  @CMakeFiles\cmTC_9459c.dir\objects1.rsp -o cmTC_9459c.js @CMakeFiles\cmTC_9459c.dir\linkLibs.rsp
+mingw32-make.exe[2]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+mingw32-make.exe[1]: Leaving directory 'D:/Repos/2DGame/build-emscripten/CMakeFiles/CMakeTmp'
+
+
+
