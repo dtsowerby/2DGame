@@ -1,0 +1,1 @@
+ -pthread libalsoft.common.a libalsoft.excommon.a libopenal.a -pthread libalsoft.common.a -ldl -lm -lrt 
