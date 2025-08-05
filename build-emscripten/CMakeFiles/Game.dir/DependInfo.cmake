@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/Repos/2DGame/lib/ALHelpers/alhelpers.c" "CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o" "gcc" "CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o.d"
-  "D:/Repos/2DGame/lib/glad/src/glad.c" "CMakeFiles/Game.dir/lib/glad/src/glad.c.o" "gcc" "CMakeFiles/Game.dir/lib/glad/src/glad.c.o.d"
+  "D:/Repos/2DGame/lib/glades/src/glad.c" "CMakeFiles/Game.dir/lib/glades/src/glad.c.o" "gcc" "CMakeFiles/Game.dir/lib/glades/src/glad.c.o.d"
   "D:/Repos/2DGame/src/game/collision.c" "CMakeFiles/Game.dir/src/game/collision.c.o" "gcc" "CMakeFiles/Game.dir/src/game/collision.c.o.d"
   "D:/Repos/2DGame/src/gfx/animation.c" "CMakeFiles/Game.dir/src/gfx/animation.c.o" "gcc" "CMakeFiles/Game.dir/src/gfx/animation.c.o.d"
   "D:/Repos/2DGame/src/gfx/font.c" "CMakeFiles/Game.dir/src/gfx/font.c.o" "gcc" "CMakeFiles/Game.dir/src/gfx/font.c.o.d"

@@ -21,7 +21,7 @@ CMakeFiles/Game.dir/src/gfx/particle.c.o: \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\bits\stdint.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\GL\gl.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\GL\glext.h \
-  D:\Repos\2DGame\lib\glad\include\KHR\khrplatform.h \
+  D:\Repos\2DGame\lib\glades\include\KHR\khrplatform.h \
   D:\Repos\2DGame\src\gfx\sprite_renderer.h \
   D:\Repos\2DGame\src\gfx\texture.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\stdlib.h \

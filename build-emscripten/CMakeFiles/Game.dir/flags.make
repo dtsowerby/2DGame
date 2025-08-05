@@ -6,5 +6,5 @@ C_DEFINES =
 
 C_INCLUDES = @CMakeFiles/Game.dir/includes_C.rsp
 
-C_FLAGS = -O2 -g -DNDEBUG -std=gnu11
+C_FLAGS =  -g0 -O2 -O2 -g -DNDEBUG -std=gnu11
 

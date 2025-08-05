@@ -86,20 +86,20 @@ CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.s"
 	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\Repos\2DGame\lib\ALHelpers\alhelpers.c -o CMakeFiles\Game.dir\lib\ALHelpers\alhelpers.c.s
 
-CMakeFiles/Game.dir/lib/glad/src/glad.c.o: CMakeFiles/Game.dir/flags.make
-CMakeFiles/Game.dir/lib/glad/src/glad.c.o: CMakeFiles/Game.dir/includes_C.rsp
-CMakeFiles/Game.dir/lib/glad/src/glad.c.o: D:/Repos/2DGame/lib/glad/src/glad.c
-CMakeFiles/Game.dir/lib/glad/src/glad.c.o: CMakeFiles/Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Repos\2DGame\build-emscripten\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Game.dir/lib/glad/src/glad.c.o"
-	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Game.dir/lib/glad/src/glad.c.o -MF CMakeFiles\Game.dir\lib\glad\src\glad.c.o.d -o CMakeFiles\Game.dir\lib\glad\src\glad.c.o -c D:\Repos\2DGame\lib\glad\src\glad.c
+CMakeFiles/Game.dir/lib/glades/src/glad.c.o: CMakeFiles/Game.dir/flags.make
+CMakeFiles/Game.dir/lib/glades/src/glad.c.o: CMakeFiles/Game.dir/includes_C.rsp
+CMakeFiles/Game.dir/lib/glades/src/glad.c.o: D:/Repos/2DGame/lib/glades/src/glad.c
+CMakeFiles/Game.dir/lib/glades/src/glad.c.o: CMakeFiles/Game.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Repos\2DGame\build-emscripten\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Game.dir/lib/glades/src/glad.c.o"
+	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Game.dir/lib/glades/src/glad.c.o -MF CMakeFiles\Game.dir\lib\glades\src\glad.c.o.d -o CMakeFiles\Game.dir\lib\glades\src\glad.c.o -c D:\Repos\2DGame\lib\glades\src\glad.c
 
-CMakeFiles/Game.dir/lib/glad/src/glad.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Game.dir/lib/glad/src/glad.c.i"
-	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\Repos\2DGame\lib\glad\src\glad.c > CMakeFiles\Game.dir\lib\glad\src\glad.c.i
+CMakeFiles/Game.dir/lib/glades/src/glad.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Game.dir/lib/glades/src/glad.c.i"
+	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\Repos\2DGame\lib\glades\src\glad.c > CMakeFiles\Game.dir\lib\glades\src\glad.c.i
 
-CMakeFiles/Game.dir/lib/glad/src/glad.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Game.dir/lib/glad/src/glad.c.s"
-	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\Repos\2DGame\lib\glad\src\glad.c -o CMakeFiles\Game.dir\lib\glad\src\glad.c.s
+CMakeFiles/Game.dir/lib/glades/src/glad.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Game.dir/lib/glades/src/glad.c.s"
+	D:\Repos\emsdk\upstream\emscripten\emcc.bat $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\Repos\2DGame\lib\glades\src\glad.c -o CMakeFiles\Game.dir\lib\glades\src\glad.c.s
 
 CMakeFiles/Game.dir/src/game/collision.c.o: CMakeFiles/Game.dir/flags.make
 CMakeFiles/Game.dir/src/game/collision.c.o: CMakeFiles/Game.dir/includes_C.rsp
@@ -344,7 +344,7 @@ CMakeFiles/Game.dir/src/utils/window.c.s: cmake_force
 # Object files for target Game
 Game_OBJECTS = \
 "CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o" \
-"CMakeFiles/Game.dir/lib/glad/src/glad.c.o" \
+"CMakeFiles/Game.dir/lib/glades/src/glad.c.o" \
 "CMakeFiles/Game.dir/src/game/collision.c.o" \
 "CMakeFiles/Game.dir/src/gfx/animation.c.o" \
 "CMakeFiles/Game.dir/src/gfx/font.c.o" \
@@ -366,7 +366,7 @@ Game_OBJECTS = \
 Game_EXTERNAL_OBJECTS =
 
 D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o
-D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/lib/glad/src/glad.c.o
+D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/lib/glades/src/glad.c.o
 D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/src/game/collision.c.o
 D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/src/gfx/animation.c.o
 D:/Repos/2DGame/bin/web/Game.html: CMakeFiles/Game.dir/src/gfx/font.c.o

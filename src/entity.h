@@ -49,7 +49,7 @@ typedef struct Entity
     int projectileType;
 
     //Enemy
-    EnemyType enemyType;
+    EnemyType enemyType; 
     HMM_Vec3 enemyColour;
     int health;
 

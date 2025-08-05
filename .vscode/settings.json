@@ -123,7 +123,9 @@
         "glfw3.h": "c",
         "*.inc": "c",
         "random.h": "c",
-        "al.h": "c"
+        "al.h": "c",
+        "sound.h": "c",
+        "stdlib.h": "c"
     },
 
     "files.exclude": {

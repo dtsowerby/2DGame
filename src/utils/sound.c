@@ -24,8 +24,6 @@
 
 /* This file contains an example for playing a sound buffer. */
 
-#pragma once
-
 #ifndef __EMSCRIPTEN__
 
 #include <assert.h>
@@ -362,6 +360,7 @@ void playSoundLoop(ALuint source)
 Sound LoadSoundBuffer(const char *filename)
 {
     // In Emscripten, we don't actually load the sound into a buffer.
+    return "";
 }
 Sound loadSound(const char *filename)
 {

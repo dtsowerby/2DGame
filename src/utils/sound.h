@@ -24,12 +24,7 @@
 
 /* This file contains an example for playing a sound buffer. */
 
-#ifdef __EMSCRIPTEN__
-typedef const char* Sound;
-#else
-#include <AL/al.h>
-typedef unsigned int ALuint;
-typedef ALuint Sound;
+#pragma once
 
 enum FormatType {
     Int16,
@@ -37,6 +32,17 @@ enum FormatType {
     IMA4,
     MSADPCM
 };
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
+#ifdef __EMSCRIPTEN__
+typedef const char* Sound;
+#else
+#include <AL/al.h>
+typedef unsigned int ALuint;
+typedef ALuint Sound;
 #endif
 
 Sound LoadSoundBuffer(const char *filename);

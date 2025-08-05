@@ -12,7 +12,39 @@
 
 #include "utils/debug_shapes.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#include <emscripten/console.h>
+#endif
+
 extern PostProcessor postProcessor;
+
+// Global function pointers for main loop
+static void (*update_func)() = NULL;
+static void (*ui_update_func)() = NULL;
+static float lastFrame = 0.0f;
+
+#ifdef __EMSCRIPTEN__
+void main_loop() {
+    float currentFrame = (float)glfwGetTime();
+    state.deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;  
+    state.time += state.deltaTime;
+    
+    beginPostProcessing(&postProcessor);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    if (update_func) update_func();
+    if (ui_update_func) ui_update_func();
+
+    endPostProcessing(&postProcessor);
+    renderPostProcessed(&postProcessor, state.time);
+
+    glfwSwapBuffers(state.window);
+    glfwPollEvents();
+}
+#endif
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
@@ -42,9 +74,18 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
     }
 
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+    
+#ifdef __EMSCRIPTEN__
+    // For Emscripten/WebGL 2.0, use these specific settings
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    // Don't set profile for Emscripten, it will use WebGL automatically
+#else
+    // For native builds, use OpenGL 4.5
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 
     state.window = glfwCreateWindow( 1024, 768, "Game", NULL, NULL);
     if( state.window == NULL ){
@@ -60,17 +101,27 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
     glfwSetWindowSizeCallback(state.window, window_size_callback);
     glfwSetKeyCallback(state.window, input);
 
+    #ifdef __EMSCRIPTEN__
+    if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress))
+    {
+        fprintf( stderr, "GLAD not happy" );
+        return;
+    }
+    #else
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         fprintf( stderr, "GLAD not happy" );
         return;
     }
+    #endif
 
+#ifndef __EMSCRIPTEN__
     if(InitAL() != 0)
     {
         fprintf(stderr, "Failed to initialize OpenAL\n");
         return;
     }
+#endif
 
     //initSteamAPI();
 
@@ -81,7 +132,7 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClearColor(1.0f, 0.1f, 0.1f, 0.0f);
 
     state.windowHeight = initialWindowHeight;
     state.windowWidth = initialWindowWidth;
@@ -95,10 +146,19 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
 
     start();
 
-    float lastFrame = 0.0f;
+    lastFrame = 0.0f;
 
     glDisable(GL_DEPTH_TEST);
 
+#ifdef __EMSCRIPTEN__
+    // Store function pointers for main loop
+    update_func = update;
+    ui_update_func = ui_update;
+    
+    // Use Emscripten's main loop
+    emscripten_set_main_loop(main_loop, 0, 1);
+#else
+    // Standard main loop for native builds
     while(!glfwWindowShouldClose(state.window))
     {      
         float currentFrame = (float)glfwGetTime();
@@ -117,6 +177,7 @@ void InitializeWindow(void (*start)(), void (*update)(), void (*input)(GLFWwindo
         glfwSwapBuffers(state.window);
         glfwPollEvents();
     }
+#endif
 }
 
 // Prolly won't use

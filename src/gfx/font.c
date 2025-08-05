@@ -1,3 +1,9 @@
+#ifdef __EMSCRIPTEN__
+#define RESOURCES(x) "res-web/" #x
+#else
+#define RESOURCES(x) "res/" #x
+#endif
+
 #include <glad.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,8 +36,8 @@ void initFont()
     fontTexture = loadTexture(upheaval.texturePath);
     
     // Load custom font shader with per-vertex colors
-    fontShader = createShaderProgramS("res/shaders/font.vert", "res/shaders/font.frag");
-    
+    fontShader = createShaderProgramS(RESOURCES(shaders/font.vert), RESOURCES(shaders/font.frag));
+
     // Create VAO and VBO for batch rendering
     glGenVertexArrays(1, &fontVAO);
     glGenBuffers(1, &fontVBO);

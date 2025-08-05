@@ -24,7 +24,7 @@ char* file2buf(const char* filePath) {
 
     size_t readLength = fread(output, 1, length, file);
     if (readLength != length) {
-        printf("Error reading file: %s : %zi, %i\n", filePath, readLength, length);
+        printf("Error reading file: %s : %zi, %li\n", filePath, readLength, length);
         free(output);
         fclose(file);
         return NULL;

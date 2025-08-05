@@ -35,5 +35,5 @@ CMakeFiles/Game.dir/src/gfx/texture.c.o: \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\math.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\math.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\assert.h \
-  D:\Repos\2DGame\lib\glad\include\glad\glad.h \
-  D:\Repos\2DGame\lib\glad\include\KHR\khrplatform.h
+  D:\Repos\2DGame\lib\glades\include\glad\glad.h \
+  D:\Repos\2DGame\lib\glades\include\KHR\khrplatform.h

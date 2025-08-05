@@ -2,6 +2,12 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
+#ifdef __EMSCRIPTEN__
+#define RESOURCES(x) "res-web/" #x
+#else
+#define RESOURCES(x) "res/" #x
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -124,6 +130,8 @@ float powerUp = 1.0f;
 
 void start()
 {   
+    printf("Starting game initialization...\n");
+    
     state.tutorial = 0;
 
     state.gameState = STATE_MENU;
@@ -131,8 +139,11 @@ void start()
     state.stageCleared = 0;
     state.highScore = 1;
 
+    printf("Initializing sprite renderer...\n");
     initSpriteRenderer();
+    printf("Initializing debug shapes...\n");
     initDebugShapes();
+    printf("Initializing primitives...\n");
     initPrimitives();
 
     bombEntities = createEntityList(100);
@@ -143,13 +154,13 @@ void start()
 
     segments = createEntityList(400);
 
-    tileShaderProgram = createShaderProgramS("res/shaders/sprite.vert", "res/shaders/tile.frag");
-    particleShaderProgram = createShaderProgramS("res/shaders/particle.vert", "res/shaders/particle.frag");
-    backgroundShaderProgram = createShaderProgramS("res/shaders/background.vert", "res/shaders/background.frag");
+    tileShaderProgram = createShaderProgramS(RESOURCES(shaders/sprite.vert), RESOURCES(shaders/tile.frag));
+    particleShaderProgram = createShaderProgramS(RESOURCES(shaders/particle.vert), RESOURCES(shaders/particle.frag));
+    backgroundShaderProgram = createShaderProgramS(RESOURCES(shaders/background.vert), RESOURCES(shaders/background.frag));
 
     initPostProcessor(&postProcessor, state.windowWidth, state.windowHeight);
-    
-    tilemap.texture = loadTexture("res/art/tiles1.0.png");
+
+    tilemap.texture = loadTexture(RESOURCES(art/tiles1.0.png));
     tilemap.tileWidth = 16;
     tilemap.tileCountX = 15;
 
@@ -199,13 +210,14 @@ void start()
     enemy.rotation = 0.0f;
     enemy.isVisible = 1;
 
-    song = loadSound("res/sounds/Game1.wav");
+    printf("Loading sounds...\n");
+    song = loadSound(RESOURCES(sounds/Game1.wav));
     // = loadSound("res/sounds/projectilehit.wav");
-    shoot = loadSound("res/sounds/laser1.wav");
-    coinCollect = loadSound("res/sounds/tone1.wav");
-    finishStage = loadSound("res/sounds/spaceTrash1.wav");
-    bought = loadSound("res/sounds/threeTone1.wav");
-    gameEnd = loadSound("res/sounds/gameEnd.wav");
+    shoot = loadSound(RESOURCES(sounds/laser1.wav));
+    coinCollect = loadSound(RESOURCES(sounds/tone1.wav));
+    finishStage = loadSound(RESOURCES(sounds/spaceTrash1.wav));
+    bought = loadSound(RESOURCES(sounds/threeTone1.wav));
+    gameEnd = loadSound(RESOURCES(sounds/gameEnd.wav));
     playSoundLoop(song);
 
     //map = parseMapFile("res/maps/test.map");
@@ -217,6 +229,8 @@ void start()
     col_one = random_range(0.3f, 0.7f);
     col_two = random_range(0.3f, 0.7f);
     col_three = random_range(0.3f, 0.7f);
+    
+    printf("Game initialization complete!\n");
 }
 
 void spawnEnemy(HMM_Vec2 position, EnemyType type, HMM_Vec3 colour)
@@ -907,15 +921,15 @@ void game_update()
         }
         char deathText[64];
         sprintf(deathText, "  Game Over\nStage reached: %u", state.stage);
-        drawString(upheaval, deathText, (HMM_Vec2){-500.0f + player.position.X, sin(state.time * 5.0f)*10.0f - 100.0f + player.position.Y}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, 3.2f);
+        drawString(upheaval, deathText, (HMM_Vec2){-480.0f + player.position.X, sin(state.time * 5.0f)*10.0f - 100.0f + player.position.Y}, (HMM_Vec3){1.0f, 1.0f, 1.0f}, 2.6f);
         if(timeSinceDeath > 2.5f) {
             if(nextState == STATE_DEATH) {timeSinceSwitchStart = 0.0f;}
-            switchingScene = 1;
-            nextState = STATE_MENU;
+            switchingScene = 1; 
+            nextState = STATE_MENU; 
         }
         if(timeSinceDeath > 2.9f) {
             resumeSound(song);
-        }
+        } 
         timeSinceDeath += state.deltaTime;
     }
 
@@ -932,11 +946,11 @@ void game_update()
             HMM_Vec2 projDims = getProjectionDimensions();
             drawRect((HMM_Vec2){- projDims.X + timeSinceSwitchStart*projDims.X*(1.0f/0.4f), player.position.Y}, (HMM_Vec2){projDims.X*1.25f, projDims.Y*1.5f}, 0.0f, (HMM_Vec3){0.0f, 0.0f, 0.0f}, particleShaderProgram);
         } else {switchingScene = 0; lastShot = 0.0f;}
-    } else
-
-    if(1.0f/state.deltaTime < 40.0f) {
-        printf("FPS below 40: %f\n", 1.0f/state.deltaTime);
     }
+
+    /*if(1.0f/state.deltaTime < 40.0f) {
+        //printf("FPS below 40: %f\n", 1.0f/state.deltaTime);
+    }*/
 
     //printf("Player Position: (%f, %f)\n", player.position.X, player.position.Y);
 }
@@ -1023,7 +1037,7 @@ void input(GLFWwindow* window, int key, int scancode, int action, int mods)
                 camera_update(state.mouseX, state.mouseY);
                 break;
             case GLFW_KEY_SPACE:
-                printf("enemyCount: %d\n", enemyCount);
+                //printf("enemyCount: %d\n", enemyCount);
                 break;
             case GLFW_KEY_E:
                 if(state.stageCleared == 1) {
@@ -1095,6 +1109,13 @@ int main(int argc, char** argv)
     (void)argc; // Unused parameter
     (void)argv; // Unused parameter
 
+#ifdef __EMSCRIPTEN__
+    printf("Emscripten main called, initializing...\n");
+    // Emscripten will handle dependency loading automatically
     InitializeWindow(start, game_update, input, ui_update);
     return 0;
+#else
+    InitializeWindow(start, game_update, input, ui_update);
+    return 0;
+#endif
 }

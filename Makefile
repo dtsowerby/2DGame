@@ -20,12 +20,11 @@ run:
 	$(BIN)/Release/Game.exe
 
 rebuild_web: dirs
-	emcmake cmake -B build-emscripten
+	cd ../emsdk && call emsdk_env.bat && cd ../2DGame && emcmake cmake -B build-emscripten
 
 build_web: dirs
-	cmake --build build-emscripten
+	cd ../emsdk && call emsdk_env.bat && cd ../2DGame && cmake --build build-emscripten
 
 run_web: dirs
-	cd $(BIN)/web
-	python -m http.server 8000
-	$(info http://localhost:8000/Game.html)
+	cd ../emsdk && call emsdk_env.bat && cd ../2DGame/bin/web && emrun --no_browser --port 8000 .
+	echo http://localhost:8000/Game.html

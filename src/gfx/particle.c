@@ -18,7 +18,7 @@ void initParticleSystem() {
 
 float randomFloat(float min, float max) {
     if (!randomInitialized) initParticleSystem();
-    return min + (max - min) * ((float)rand() / RAND_MAX);
+    return min + (max - min) * ((float)rand() / (float)RAND_MAX);
 }
 
 HMM_Vec2 randomVec2(HMM_Vec2 min, HMM_Vec2 max) {

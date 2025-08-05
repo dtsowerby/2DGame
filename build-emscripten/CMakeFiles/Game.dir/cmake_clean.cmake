@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o"
   "CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.o.d"
-  "CMakeFiles/Game.dir/lib/glad/src/glad.c.o"
-  "CMakeFiles/Game.dir/lib/glad/src/glad.c.o.d"
+  "CMakeFiles/Game.dir/lib/glades/src/glad.c.o"
+  "CMakeFiles/Game.dir/lib/glades/src/glad.c.o.d"
   "CMakeFiles/Game.dir/src/game/collision.c.o"
   "CMakeFiles/Game.dir/src/game/collision.c.o.d"
   "CMakeFiles/Game.dir/src/gfx/animation.c.o"

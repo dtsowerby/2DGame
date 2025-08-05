@@ -24,8 +24,8 @@ CMakeFiles/Game.dir/src/utils/debug_shapes.c.o: \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\compat\string.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\string.h \
   D:\Repos\emsdk\upstream\emscripten\cache\sysroot\include\strings.h \
-  D:\Repos\2DGame\lib\glad\include\glad\glad.h \
-  D:\Repos\2DGame\lib\glad\include\KHR\khrplatform.h \
+  D:\Repos\2DGame\lib\glades\include\glad\glad.h \
+  D:\Repos\2DGame\lib\glades\include\KHR\khrplatform.h \
   D:\Repos\2DGame\lib\HandmadeMath\HandmadeMath.h \
   D:\Repos\2DGame\src\utils\debug_shapes.h \
   D:\Repos\2DGame\src\gfx\shader.h \

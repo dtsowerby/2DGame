@@ -1,3 +1,9 @@
+#ifdef __EMSCRIPTEN__
+#define RESOURCES(x) "res-web/" #x
+#else
+#define RESOURCES(x) "res/" #x
+#endif
+
 #include <glad.h>
 #include <stdio.h>
 #include <HandmadeMath.h>
@@ -16,8 +22,8 @@ void initPostProcessor(PostProcessor* processor, int width, int height)
     processor->chromaticAberrationStrength = 0.002f;
     
     // Load post-processing shader
-    processor->shaderProgram = createShaderProgramS("res/shaders/postprocess.vert", "res/shaders/postprocess.frag");
-    
+    processor->shaderProgram = createShaderProgramS(RESOURCES(shaders/postprocess.vert), RESOURCES(shaders/postprocess.frag));
+
     // Create framebuffer
     glGenFramebuffers(1, &processor->framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, processor->framebuffer);

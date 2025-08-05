@@ -179,29 +179,29 @@ lib/ALHelpers/alhelpers.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/ALHelpers/alhelpers.c.s
 .PHONY : lib/ALHelpers/alhelpers.c.s
 
-lib/glad/src/glad.o: lib/glad/src/glad.c.o
-.PHONY : lib/glad/src/glad.o
+lib/glades/src/glad.o: lib/glades/src/glad.c.o
+.PHONY : lib/glades/src/glad.o
 
 # target to build an object file
-lib/glad/src/glad.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glad/src/glad.c.o
-.PHONY : lib/glad/src/glad.c.o
+lib/glades/src/glad.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glades/src/glad.c.o
+.PHONY : lib/glades/src/glad.c.o
 
-lib/glad/src/glad.i: lib/glad/src/glad.c.i
-.PHONY : lib/glad/src/glad.i
+lib/glades/src/glad.i: lib/glades/src/glad.c.i
+.PHONY : lib/glades/src/glad.i
 
 # target to preprocess a source file
-lib/glad/src/glad.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glad/src/glad.c.i
-.PHONY : lib/glad/src/glad.c.i
+lib/glades/src/glad.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glades/src/glad.c.i
+.PHONY : lib/glades/src/glad.c.i
 
-lib/glad/src/glad.s: lib/glad/src/glad.c.s
-.PHONY : lib/glad/src/glad.s
+lib/glades/src/glad.s: lib/glades/src/glad.c.s
+.PHONY : lib/glades/src/glad.s
 
 # target to generate assembly for a file
-lib/glad/src/glad.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glad/src/glad.c.s
-.PHONY : lib/glad/src/glad.c.s
+lib/glades/src/glad.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Game.dir\build.make CMakeFiles/Game.dir/lib/glades/src/glad.c.s
+.PHONY : lib/glades/src/glad.c.s
 
 src/game/collision.o: src/game/collision.c.o
 .PHONY : src/game/collision.o
@@ -601,9 +601,9 @@ help:
 	@echo ... lib/ALHelpers/alhelpers.o
 	@echo ... lib/ALHelpers/alhelpers.i
 	@echo ... lib/ALHelpers/alhelpers.s
-	@echo ... lib/glad/src/glad.o
-	@echo ... lib/glad/src/glad.i
-	@echo ... lib/glad/src/glad.s
+	@echo ... lib/glades/src/glad.o
+	@echo ... lib/glades/src/glad.i
+	@echo ... lib/glades/src/glad.s
 	@echo ... src/game/collision.o
 	@echo ... src/game/collision.i
 	@echo ... src/game/collision.s

@@ -35,7 +35,8 @@ static DebugShapesState debugState = {0};
 
 // Simple debug line vertex shader
 static const char* debugVertexShader = 
-    "#version 330 core\n"
+    "#version 300 es\n"
+    "precision mediump float;\n"
     "layout (location = 0) in vec2 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
     "uniform mat4 projection;\n"
@@ -49,7 +50,8 @@ static const char* debugVertexShader =
 
 // Simple debug line fragment shader
 static const char* debugFragmentShader = 
-    "#version 330 core\n"
+    "#version 300 es\n"
+    "precision mediump float;\n"
     "in vec3 vertexColor;\n"
     "out vec4 FragColor;\n"
     "void main()\n"

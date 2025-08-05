@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef __EMSCRIPTEN__
+#define RESOURCES(x) "res-web/" #x
+#else
+#define RESOURCES(x) "res/" #x
+#endif
+
 #include "HandmadeMath.h"
 
 typedef struct Character {
@@ -111,7 +117,7 @@ static Character font_chars[] = {
   {'~', 141, 94, 26, 12, 2, 14, 28},
 };
 
-static Font upheaval = {"Upheaval", 32, 0, 0, 315, 117, 95, font_chars, "res/fonts/upheaval.png"};
+static Font upheaval = {"Upheaval", 32, 0, 0, 315, 117, 95, font_chars, RESOURCES(fonts/upheaval.png)};
 
 // Function declarations
 void initFont();
