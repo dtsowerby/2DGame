@@ -1,1 +1,0 @@
-D:\Repos\emsdk\upstream\emscripten\emcc.bat -O2 -g -DNDEBUG  -s USE_GLFW=3 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=134217728 --emrun -s FULL_ES3=1 @CMakeFiles\dwvw_test.dir\objects1.rsp -o D:\Repos\2DGame\bin\web\dwvw_test.html @CMakeFiles\dwvw_test.dir\linkLibs.rsp

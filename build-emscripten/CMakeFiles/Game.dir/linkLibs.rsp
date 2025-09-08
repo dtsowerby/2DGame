@@ -1,1 +1,0 @@
- "lib/openal-soft/libalsoft.excommon.a" "lib/openal-soft/libalsoft.common.a" lib/libsndfile/libsndfile.a "lib/openal-soft/libopenal.a" "lib/openal-soft/libalsoft.common.a" -pthread -ldl -lrt -lm 

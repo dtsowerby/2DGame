@@ -1,5 +1,0 @@
-D:/Repos/2DGame/build-emscripten/CMakeFiles/Game.dir
-D:/Repos/2DGame/build-emscripten/CMakeFiles/package.dir
-D:/Repos/2DGame/build-emscripten/CMakeFiles/package_source.dir
-D:/Repos/2DGame/build-emscripten/CMakeFiles/edit_cache.dir
-D:/Repos/2DGame/build-emscripten/CMakeFiles/rebuild_cache.dir

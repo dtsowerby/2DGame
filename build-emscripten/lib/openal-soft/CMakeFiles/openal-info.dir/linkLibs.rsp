@@ -1,1 +1,0 @@
- -pthread libopenal.a -pthread libalsoft.common.a -ldl -lm 

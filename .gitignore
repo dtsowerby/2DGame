@@ -1,3 +1,6 @@
 build/*
-bin/*
+bin/release
 lib/*
+release/revolver.exe
+build-emscriptem/*
+.vscode/*
